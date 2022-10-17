@@ -11,7 +11,7 @@ jobs:
     name: Deploy Site
     runs-on: ubuntu-latest
     env:
-      working-directory: ./working-directory
+      working-directory: ./workingdirectory
   
     steps:
 
