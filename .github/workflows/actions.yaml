@@ -1,7 +1,4 @@
 name: Deploy Infrastructure
-defaults: 
-  run:
-    working-directory: ${{ env.tf_actions_working_dir }}
 
 on:
   push:
@@ -9,29 +6,36 @@ on:
       - main
 
 jobs:
-  tf_fmt:
+  da_job:
+
     name: Deploy Site
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./working-directory
+  
     steps:
 
     - uses: hashicorp/setup-terraform@v2
 
     - name: Checkout Repo
       uses: actions/checkout@v3
-
+      working-directory: ${{ env.working-directory }}
 
     - name: Terraform fmt
       id: fmt
       run: terraform fmt -check
       continue-on-error: true
-
+      working-directory: ${{ env.working-directory }}
+   
     - name: Terraform Init
       id: init
       run: terraform init
+      working-directory: ${{ env.working-directory }}
 
     - name: Terraform Validate
       id: validate
       run: terraform validate -no-color
+      working-directory: ${{ env.working-directory }}
 
 
     - name: Terraform Apply
@@ -41,6 +45,7 @@ jobs:
         TF_ACTION_WORKING_DIR: 'terraform'
         AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      working-directory: ${{ env.working-directory }}
 
     - name: Sync S3
       uses: jakejarvis/s3-sync-action@master
@@ -50,3 +55,4 @@ jobs:
         AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      working-directory: ${{ env.working-directory }}
