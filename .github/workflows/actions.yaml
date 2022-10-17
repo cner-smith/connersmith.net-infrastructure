@@ -11,29 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - uses: hashicorp/setup-terraform@v2
+    
     - name: Checkout Repo
       uses: actions/checkout@v3
 
 
     - name: Terraform fmt
-      uses: hashicorp/setup-terraform@v2
       id: fmt
       run: terraform fmt -check
       continue-on-error: true
 
     - name: Terraform Init
-      uses: hashicorp/setup-terraform@v2
       id: init
       run: terraform init
 
     - name: Terraform Validate
-      uses: hashicorp/setup-terraform@v2
       id: validate
       run: terraform validate -no-color
 
 
     - name: Terraform Apply
-      uses: hashicorp/setup-terraform@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TF_ACTION_WORKING_DIR: 'terraform'
