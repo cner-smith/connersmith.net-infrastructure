@@ -1,4 +1,7 @@
 name: Deploy Infrastructure
+defaults: 
+  run:
+    working-directory: ${{ env.tf_actions_working_dir }}
 
 on:
   push:
