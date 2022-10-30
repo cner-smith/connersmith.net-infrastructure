@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working_directory: cner-smith/connersmith.net-infrastructure/terraform
+        working-directory: cner-smith/connersmith.net-infrastructure/terraform
 
     steps:
     - name: Setup Terraform
