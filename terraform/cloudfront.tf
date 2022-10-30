@@ -2,7 +2,7 @@
 resource "aws_cloudfront_distribution" "www_s3_distribution" {
   origin {
     domain_name = aws_s3_bucket.www_bucket.bucket
-    origin_id   = "S3www.${var.bucket_name}"
+    origin_id   = "S3-www.${var.bucket_name}"
 
     custom_origin_config {
       http_port              = 80
@@ -28,7 +28,7 @@ resource "aws_cloudfront_distribution" "www_s3_distribution" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3www.${var.bucket_name}"
+    target_origin_id = "S3-www.${var.bucket_name}"
 
     forwarded_values {
       query_string = false
