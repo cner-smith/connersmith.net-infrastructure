@@ -24,7 +24,7 @@ jobs:
     - name: Terraform fmt
       id: fmt
       run: |
-        cd $home/repo \
+        cd $home/repo
         terraform fmt -check
       continue-on-error: true
    
