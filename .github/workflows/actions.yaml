@@ -16,6 +16,9 @@ jobs:
 
     - uses: hashicorp/setup-terraform@v2
 
+    - name: Build Docker image
+      run: cd dir \\wsl$\Ubuntu\home\vm-conner\connersmith-terraform\terraform
+
     - name: Checkout Repo
       uses: actions/checkout@v3
 
