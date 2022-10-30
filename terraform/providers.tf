@@ -6,13 +6,13 @@ terraform {
     }
   }
 
-  required_version = ">=0.14.9" 
+  required_version = ">=0.14.9"
 
-    backend "s3" {
-      bucket = "connersmith-terraform"
-      key    = "dev/terraform.tfstate"
-      region = "us-east-1"
-    }
+  backend "s3" {
+    bucket = "connersmith-terraform"
+    key    = "dev/terraform.tfstate"
+    region = "us-east-1"
+  }
 }
 
 provider "aws" {
