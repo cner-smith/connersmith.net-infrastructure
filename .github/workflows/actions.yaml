@@ -22,21 +22,27 @@ jobs:
     - name: Terraform fmt
       id: fmt
       run: |
-        cd $github_workspace
+        cd $GITHUB_WORKSPACE
         terraform fmt -check
       continue-on-error: true
    
     - name: Terraform Init
       id: init
-      run: terraform init
+      run: |
+        cd $GITHUB_WORKSPACE
+        terraform init
 
     - name: Terraform Validate
       id: validate
-      run: terraform validate -no-color
+      run: |
+        cd $GITHUB_WORKSPACE
+        terraform validate -no-color
 
 
     - name: Terraform Apply
-      run: terraform apply
+      run: |
+        cd $GITHUB_WORKSPACE
+        terraform apply
 
     - name: Sync S3
       uses: jakejarvis/s3-sync-action@master
