@@ -12,13 +12,9 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v3
-      run: |
-        cd cner-smith/connersmith.net-infrastructure/terraform
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
-      run: |
-        cd cner-smith/connersmith.net-infrastructure/terraform
       with:
         terraform_version: 1.1.9
         terraform_wrapper: false
