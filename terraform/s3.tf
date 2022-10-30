@@ -33,15 +33,15 @@ resource "aws_s3_bucket_policy" "www-s3-policy" {
 }
 EOF
 
-# S3 bucket for redirecting non-www to www.
-resource "aws_s3_bucket" "root_bucket" {
-  bucket = var.bucket_name
-}
+  # S3 bucket for redirecting non-www to www.
+  resource "aws_s3_bucket" "root_bucket" {
+    bucket = var.bucket_name
+  }
 
-#Resource to attach a bucket policy to a bucket 
-resource "aws_s3_bucket_policy" "s3-policy" {
-  bucket = aws_s3_bucket.root_bucket.id
-  policy = <<EOF
+  #Resource to attach a bucket policy to a bucket 
+  resource "aws_s3_bucket_policy" "s3-policy" {
+    bucket = aws_s3_bucket.root_bucket.id
+    policy = <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -68,23 +68,24 @@ resource "aws_s3_bucket_policy" "s3-policy" {
 }
 EOF
 
-resource "aws_s3_bucket_website_configuration" "www_bucket_config" {
-  bucket = "www.${var.bucket_name}"
+    resource "aws_s3_bucket_website_configuration" "www_bucket_config" {
+      bucket = "www.${var.bucket_name}"
 
-  index_document {
-    suffix = "index.html"
-  }
-  error_document {
-    key = "404.html"
-  }
-}
+      index_document {
+        suffix = "index.html"
+      }
+      error_document {
+        key = "404.html"
+      }
+    }
 
-# S3 bucket for redirecting non-www to www.
-resource "aws_s3_bucket_website_configuration" "root_bucket_config" {
-  bucket = var.bucket_name
-  redirect_all_requests_to {
-    host_name = "www.${var.domain_name}"
-    protocol  = "https"
+    # S3 bucket for redirecting non-www to www.
+    resource "aws_s3_bucket_website_configuration" "root_bucket_config" {
+      bucket = var.bucket_name
+      redirect_all_requests_to {
+        host_name = "www.${var.domain_name}"
+        protocol  = "https"
+      }
+    }
   }
-
 }
