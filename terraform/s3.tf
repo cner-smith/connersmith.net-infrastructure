@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "www_bucket" {
 
 #Resource to attach a bucket policy to a bucket 
 resource "aws_s3_bucket_policy" "www-s3-policy" {
-  bucket = aws_s3_bucket.www_bucket.id
+  bucket = aws_s3_bucket.bucket.www_bucket
   policy = <<EOF
   {
       "Version": "2012-10-17",
@@ -41,7 +41,7 @@ resource "aws_s3_bucket" "root_bucket" {
 
 #Resource to attach a bucket policy to a bucket 
 resource "aws_s3_bucket_policy" "s3-policy" {
-  bucket = aws_s3_bucket.root_bucket.id
+  bucket = aws_s3_bucket.bucket.root_bucket
   policy = <<EOF
   {
     "Version": "2012-10-17",
