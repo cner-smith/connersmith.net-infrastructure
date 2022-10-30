@@ -8,7 +8,10 @@ on:
 jobs: 
   terraform:
     runs-on: ubuntu-latest
-    name: Terraform
+    defaults:
+      run:
+        working-directory: ./terraform
+
     steps:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
