@@ -1,67 +1,65 @@
-name: 'Deploy Infrastructure'
+name: Terraform AWS Workflow
 
 on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      tfpath:
+        description: 'TF File Path'     
+        required: false
+        default: 'terraform/'
   push:
-    branches:
-    - main
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-jobs: 
-  terraform:
+jobs:
+  tf_code_check:
+    name: Terraform Validation and Build
     runs-on: ubuntu-latest
 
+    if:  ${{ inputs.tfpath }} 
     steps:
-    uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+    
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+    - name: Configure AWS Credentials Action For GitHub Actions
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        terraform_version: 1.1.9
-        terraform_wrapper: false
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    - name: Setup Terraform CLI
+      uses: hashicorp/setup-terraform@v2.0.2
 
-    - name: Terraform Init
-      id: init
+    - name: Terraform init, plan and apply
       run: |
-        cd cner-smith/connersmith.net-infrastructure/terraform
+        echo `pwd`
+        echo "tfpath ${{ github.event.inputs.tfpath }}"
+        echo "** Running Terraform Init**"
         terraform init
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      shell: bash
-
-    - name: Terraform Plan
-      id: plan
-      run: |
-        cd cner-smith/connersmith.net-infrastructure/terraform
-        terraform plan -input=false -no-color -out tf.plan
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      shell: bash
-
-    - name: Terraform Validate
-      id: validate
-      run: |
-        cd cner-smith/connersmith.net-infrastructure/terraform
+        
+        echo "** Running Terraform Validate**"
         terraform validate
-
-    - name: Terraform Apply
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        
+        echo "** Running Terraform Plan**"
+        terraform plan
+        
+#        echo "** Running Terraform Apply**"
+#        terraform apply -auto-approve
+      working-directory: ${{ github.event.inputs.tfpath }}
+    - name: Terraform Destroy
       run: |
-        cd cner-smith/connersmith.net-infrastructure/terraform
-        terraform apply -input=false tf.plan
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      shell: bash
+        echo "** Running Terraform Destroy**"
+        terraform plan -destroy
+#        terraform destroy -auto-approve
+      working-directory: ${{ github.event.inputs.tfpath }}
 
     - name: Sync S3
-      uses: jakejarvis/s3-sync-action@master
-      env:
-        SOURCE_DIR: 'cner-smith/connersmith.net-infrastructure/src'
-        AWS_REGION: 'us-east-1'
-        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    uses: jakejarvis/s3-sync-action@master
+    env:
+      SOURCE_DIR: 'src/'
+      AWS_REGION: 'us-east-1'
+      AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
