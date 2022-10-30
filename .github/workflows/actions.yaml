@@ -8,9 +8,6 @@ on:
 jobs: 
   terraform:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: cner-smith/connersmith.net-infrastructure/terraform
 
     steps:
     - name: Checkout Repo
