@@ -12,11 +12,6 @@ resource "aws_s3_bucket" "root_bucket" {
   tags = var.common_tags
 }
 
-
-
-
-
-
 resource "aws_s3_bucket_website_configuration" "www_bucket_config" {
   bucket = "www.${var.bucket_name}"
 
