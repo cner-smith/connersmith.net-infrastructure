@@ -64,7 +64,7 @@ resource "aws_cloudfront_distribution" "www_s3_distribution" {
 resource "aws_cloudfront_distribution" "root_s3_distribution" {
   origin {
     domain_name = aws_s3_bucket.root_bucket.website_endpoint
-    origin_id   = "S3.${var.bucket_name}"
+    origin_id   = "S3-.${var.bucket_name}"
     custom_origin_config {
       http_port              = 80
       https_port             = 443
@@ -111,5 +111,5 @@ resource "aws_cloudfront_distribution" "root_s3_distribution" {
     minimum_protocol_version = "TLSv1.1_2016"
   }
 
-  tags =  var.common_tags
+  tags = var.common_tags
 }
