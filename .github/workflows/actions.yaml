@@ -37,16 +37,16 @@ jobs:
         echo `pwd`
         echo "tfpath ${{ github.event.inputs.tfpath }}"
         echo "** Running Terraform Init**"
-        terraform init
+        terraform -chdir=main/${{ github.event.inputs.tfpath }} init -reconfigure -input=false
         
         echo "** Running Terraform Validate**"
-        terraform validate
+        terraform -chdir=main/${{ github.event.inputs.tfpath }} validate
         
         echo "** Running Terraform Plan**"
-        terraform plan
+        terraform -chdir=main/${{ github.event.inputs.tfpath }} plan -var-file="../../terraform/terraform.tfvars"
         
         echo "** Running Terraform Apply**"
-        terraform apply -auto-approve
+        terraform -chdir=main/${{ github.event.inputs.tfpath }} apply -auto-approve
       working-directory: ${{ github.event.inputs.tfpath }}
     - name: Terraform Destroy
       run: |
