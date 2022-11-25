@@ -13,3 +13,8 @@ resource "aws_route53_record" "main" {
     type = each.value.type
     zone_id = aws_route53_zone.main.zone_id
 }
+
+resource "aws_route53_zone" "main" {
+  name = var.domain_name
+  tags = var.common_tags
+}
