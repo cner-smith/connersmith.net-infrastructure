@@ -3,8 +3,14 @@ name: Terraform AWS Workflow
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'terraform/**'
   pull_request:
     branches: [ main ]
+
+defaults
+  run:
+    working-directory: terraform
 
 jobs:
   tf_code_check:
@@ -24,18 +30,15 @@ jobs:
       uses: hashicorp/setup-terraform@v2.0.2
       with:
         tf_actions_working_dir: './terraform'
-        
+
     - name: Terraform init, plan and apply
       run: |
         echo "** Running Terraform Init**"
         terraform init
-        
         echo "** Running Terraform Validate**"
         terraform validate
-        
         echo "** Running Terraform Plan**"
         terraform plan
-        
         echo "** Running Terraform Apply**"
         terraform apply -auto-approve
       
