@@ -24,6 +24,9 @@ jobs:
       uses: hashicorp/setup-terraform@v2.0.2
 
     - name: Terraform init, plan and apply
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_working_dir: './terraform'
       run: |
         echo "** Running Terraform Init**"
         terraform init
@@ -36,8 +39,7 @@ jobs:
         
         echo "** Running Terraform Apply**"
         terraform apply -auto-approve
-      env:
-        SOURCE_DIR: 'terraform/'
+      
     - name: Terraform Destroy
       run: |
         echo "** Running Terraform Destroy**"
