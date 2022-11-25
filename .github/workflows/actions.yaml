@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: terraform
+    working-directory: terraform/
 
 jobs:
   tf_code_check:
