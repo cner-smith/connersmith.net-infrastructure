@@ -2,11 +2,13 @@ name: Terraform AWS Workflow
 
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - master
     paths:
       - 'terraform/**'
   pull_request:
-    branches: [ main ]
+    branches: 
+      - master
 
 defaults:
   run:
