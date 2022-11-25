@@ -1,7 +1,7 @@
 # Cloudfront distribution for main s3 site.
 resource "aws_cloudfront_distribution" "www_s3_distribution" {
   origin {
-    domain_name = "${aws_s3_bucket.www_bucket.id}"
+    domain_name = aws_s3_bucket.www_bucket.website_endpoint
     origin_id   = "S3-www.${var.bucket_name}"
 
     custom_origin_config {
@@ -52,18 +52,18 @@ resource "aws_cloudfront_distribution" "www_s3_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = "${aws_acm_certificate_validation.validation.certificate_arn}"
+    acm_certificate_arn      = aws_acm_certificate_validation.validation.certificate_arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }
 
-  tags = "${var.common_tags}"
+  tags = var.common_tags
 }
 
 # Cloudfront S3 for redirect to www.
 resource "aws_cloudfront_distribution" "root_s3_distribution" {
   origin {
-    domain_name = "${aws_s3_bucket.root_bucket.id}"
+    domain_name = aws_s3_bucket.root_bucket.website_endpoint
     origin_id   = "S3.${var.bucket_name}"
     custom_origin_config {
       http_port              = 80
@@ -76,12 +76,12 @@ resource "aws_cloudfront_distribution" "root_s3_distribution" {
   enabled         = true
   is_ipv6_enabled = true
 
-  aliases = ["${var.domain_name}"]
+  aliases = [var.domain_name]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3.${var.bucket_name}"
+    target_origin_id = "S3-.${var.bucket_name}"
 
     forwarded_values {
       query_string = true
@@ -106,10 +106,10 @@ resource "aws_cloudfront_distribution" "root_s3_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = "${aws_acm_certificate_validation.validation.certificate_arn}"
+    acm_certificate_arn      = aws_acm_certificate_validation.validation.certificate_arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }
 
-  tags = "${var.common_tags}"
+  tags =  var.common_tags
 }
