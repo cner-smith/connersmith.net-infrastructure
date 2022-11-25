@@ -48,7 +48,7 @@ jobs:
       working-directory: terraform/
 
     - name: Sync S3
-      uses: jakejarvis/s3-sync-action@main
+      uses: jakejarvis/s3-sync-action@master
       env:
         SOURCE_DIR: 'src/'
         AWS_REGION: 'us-east-1'
