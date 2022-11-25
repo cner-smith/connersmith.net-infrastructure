@@ -38,14 +38,14 @@ jobs:
         
         echo "** Running Terraform Apply**"
         terraform apply -auto-approve
-      working-directory: main/terraform
+      working-directory: 'terraform/'
 
     - name: Terraform Destroy
       run: |
         echo "** Running Terraform Destroy**"
         terraform plan -destroy
         terraform destroy -auto-approve
-      working-directory: main/terraform/
+      working-directory: 'terraform/'
 
     - name: Sync S3
       uses: jakejarvis/s3-sync-action@master
