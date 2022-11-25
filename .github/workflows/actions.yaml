@@ -7,7 +7,7 @@ on:
       tfpath:
         description: 'TF File Path'     
         required: false
-        default: 'terraform/**'
+        default: 'terraform/'
   push:
     branches: [ main ]
   pull_request:
