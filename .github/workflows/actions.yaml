@@ -22,10 +22,10 @@ jobs:
         aws-region: us-east-1
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v2.0.2
-
-    - name: Terraform init, plan and apply
       with:
         tf_actions_working_dir: './terraform'
+        
+    - name: Terraform init, plan and apply
       run: |
         echo "** Running Terraform Init**"
         terraform init
