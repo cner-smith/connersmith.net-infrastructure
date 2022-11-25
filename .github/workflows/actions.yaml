@@ -26,7 +26,7 @@ jobs:
 
     - name: Terraform init, plan and apply
       run: |
-        echo `pwd`
+        echo pwd
         echo "** Running Terraform Init**"
         terraform init
         
