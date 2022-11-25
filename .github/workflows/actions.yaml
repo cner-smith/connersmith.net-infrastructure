@@ -2,9 +2,9 @@ name: Terraform AWS Workflow
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   tf_code_check:
@@ -39,12 +39,14 @@ jobs:
         echo "** Running Terraform Apply**"
         terraform apply -auto-approve
       working-directory: terraform/
+
     - name: Terraform Destroy
       run: |
         echo "** Running Terraform Destroy**"
         terraform plan -destroy
         terraform destroy -auto-approve
       working-directory: terraform/
+
     - name: Sync S3
       uses: jakejarvis/s3-sync-action@main
       env:
