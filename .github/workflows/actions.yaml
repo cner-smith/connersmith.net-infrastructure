@@ -2,9 +2,9 @@ name: Terraform AWS Workflow
 
 on:
   push:
-    branches: [main]
+    branches: [$default-branch]
   pull_request:
-    branches: [main]
+    branches: [$default-branch]
 
 jobs:
   tf_code_check:
