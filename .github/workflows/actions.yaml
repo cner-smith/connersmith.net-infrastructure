@@ -18,8 +18,6 @@ jobs:
     - name: Configure AWS Credentials Action For GitHub Actions
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         role-to-assume: arn:aws:iam::760268051681:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_AdministratorAccess_2e5108c6b742f9eb
         aws-region: us-east-1 
     - name: Setup Terraform CLI
