@@ -20,6 +20,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        role-to-assume: arn:aws:iam::760268051681:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_AdministratorAccess_2e5108c6b742f9eb
         aws-region: us-east-1 
     - name: Setup Terraform CLI
       uses: hashicorp/setup-terraform@v2.0.2
@@ -39,12 +40,12 @@ jobs:
         terraform apply -auto-approve
       working-directory: 'terraform/'
 
-    - name: Terraform Destroy
-      run: |
-        echo "** Running Terraform Destroy**"
-        terraform plan -destroy
-        terraform destroy -auto-approve
-      working-directory: 'terraform/'
+    ##- name: Terraform Destroy
+      ##run: |
+        ##echo "** Running Terraform Destroy**"
+        ##terraform plan -destroy
+        ##terraform destroy -auto-approve
+      ##working-directory: 'terraform/'
 
     - name: Sync S3
       uses: jakejarvis/s3-sync-action@master
