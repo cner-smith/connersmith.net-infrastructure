@@ -21,6 +21,5 @@ resource "aws_acm_certificate_validation" "validation" {
   provider                = aws.acm_provider
   certificate_arn         = aws_acm_certificate.connersmith_acm.arn
   validation_record_fqdns = [for record in aws_route53_record.main : record.fqdn]
-  depends_on = [provider.aws.acm_provider]
   depends_on = [aws_acm_certificate.connersmith_acm]
 }
