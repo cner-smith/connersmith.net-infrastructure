@@ -9,7 +9,6 @@ resource "aws_acm_certificate" "connersmith_acm" {
   lifecycle {
     create_before_destroy = true
   }
-  depends_on = [aws_acm_certificate_validation.validation]
 }
 
 resource "aws_acm_certificate_validation" "validation" {
