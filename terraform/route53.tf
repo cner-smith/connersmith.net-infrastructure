@@ -16,5 +16,5 @@ resource "aws_route53_record" "main" {
   ttl             = 60
   type            = each.value.type
   zone_id         = aws_route53_zone.this.zone_id
-  depends_on = [aws_route53_zone.this]
+  depends_on      = [aws_route53_zone.this]
 }
