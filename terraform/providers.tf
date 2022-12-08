@@ -1,22 +1,6 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.0"
-    }
-  }
-
-  required_version = ">=0.14.9"
-
-  backend "s3" {
-    bucket = "connersmith-terraform"
-    key    = "dev/terraform.tfstate"
-    region = "us-east-1"
-  }
-}
-
+# Configure the AWS provider.
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
 provider "aws" {
