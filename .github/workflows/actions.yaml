@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: /connersmith.net-infrastructure/terraform
+        working-directory: ${{ github.workspace }}/terraform
 
     steps:
     - uses: actions/checkout@v3
