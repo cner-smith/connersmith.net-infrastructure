@@ -215,7 +215,7 @@ resource "aws_api_gateway_deployment" "visitor_count_deployment" {
 resource "aws_api_gateway_stage" "visitor_count_gateway" {
   deployment_id = aws_api_gateway_deployment.visitor_count_deployment.id
   rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
-  stage_name    = "visitor count gateway stage"
+  stage_name    = "visitor_count_gateway_stage"
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
@@ -255,7 +255,7 @@ resource "aws_lambda_permission" "visitor_count_lambda_permission" {
   statement_id = "AllowExecutionFromAPIGateway"
   action = "lambda:InvokeFunction"
   function_name = aws_lambda_function.visitor_count_lambda.function_name
-  principal = "apigateway"
+  principal = aws_api_gateway_resource.visitor_count_gateway.arn
 }
 
 # Get the API gateway enpoint url
