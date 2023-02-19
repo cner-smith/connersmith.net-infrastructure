@@ -47,5 +47,5 @@ jobs:
       if: success()
   
     - name: Push state file to S3
-      run: terraform state push terraform/terraform.tfstate
+      run: terraform state push connersmith.net-statefile/statefile.tfstate
       if: success()
