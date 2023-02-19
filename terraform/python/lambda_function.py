@@ -21,5 +21,16 @@ def handler(event, context):
     # Extract the visitor count from the response
     count = response['Item']['count']
 
+    # Increment the count by 1
+    count += 1
+
+    # Write the new count back to the DynamoDB table
+    table.put_item(
+        Item={
+            'key': 'count',
+            'count': count
+        }
+    )
+
     # Return the visitor count as a string
     return str(count)
