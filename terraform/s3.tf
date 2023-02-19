@@ -136,3 +136,73 @@ resource "aws_route53_record" "website" {
     evaluate_target_health = false
   }
 }
+
+# Create a DynamoDB table to store the visitor count
+resource "aws_dynamodb_table" "visitor_count" {
+  name = "visitor_count"
+  hash_key = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+}
+
+# Create an API Gateway endpoint
+resource "aws_api_gateway_rest_api" "visitor_count_api" {
+  name = "visitor_count_api"
+}
+
+resource "aws_api_gateway_resource" "visitor_count_resource" {
+  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
+  parent_id = aws_api_gateway_rest_api.visitor_count_api.root_resource_id
+  path_part = "visitor-count"
+}
+
+resource "aws_api_gateway_method" "visitor_count_get" {
+  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  http_method = "GET"
+}
+
+# Triggers a Lambda Function to retrieve data from the DynamoDB table
+resource "aws_lambda_function" "visitor_count_lambda" {
+  function_name = "visitor_count_lambda"
+  handler = "index.handler"
+  runtime = "nodejs14.x"
+  filename = "visitor_count_lambda.zip"
+}
+
+resource "aws_api_gateway_integration" "visitor_count_integration" {
+  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  http_method = aws_api_gateway_method.visitor_count_get.http_method
+  integration_http_method = "POST"
+  type = "AWS_PROXY"
+  uri = aws_lambda_function.visitor_count_lambda.invoke_arn
+}
+
+# Create the Lambda Function
+resource "aws_lambda_function" "visitor_count_lambda" {
+  function_name = "visitor_count_lambda"
+  handler = "index.handler"
+  runtime = "nodejs14.x"
+  filename = "visitor_count_lambda.zip"
+}
+
+data "aws_dynamodb_table" "visitor_count" {
+  name = "visitor_count"
+}
+
+resource "aws_lambda_permission" "visitor_count_lambda_permission" {
+  statement_id = "AllowExecutionFromAPIGateway"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.visitor_count_lambda.function_name
+  principal = "apigateway"
+}
+
+# Get the API gateway enpoint url
+output "api_gateway_endpoint" {
+  value = aws_api_gateway_deployment.visitor_count_deployment.invoke_url
+}
+
