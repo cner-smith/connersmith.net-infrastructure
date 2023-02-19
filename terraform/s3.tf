@@ -156,6 +156,10 @@ resource "aws_dynamodb_table" "visitor_count" {
     name = "id"
     type = "S"
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Create an API Gateway endpoint
@@ -232,6 +236,10 @@ resource "aws_iam_role" "iam_for_lambda" {
   ]
 }
 EOF
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Triggers a Lambda Function to retrieve data from the DynamoDB table
