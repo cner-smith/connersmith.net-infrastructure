@@ -247,7 +247,7 @@ resource "aws_lambda_function" "visitor_count_lambda" {
   function_name = "visitor_count_lambda"
   handler = "index.handler"
   runtime = "nodejs14.x"
-  filename = [path.basename("/python/visitor_count_lambda.zip")]
+  filename = "${path.module}/python/visitor_count_lambda.zip"
   role = aws_iam_role.iam_for_lambda.arn
 }
 
