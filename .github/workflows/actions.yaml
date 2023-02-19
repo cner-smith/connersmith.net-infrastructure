@@ -9,6 +9,9 @@ jobs:
   tf_code_check:
     name: Terraform Validation and Build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /connersmith.net-infrastructure/terraform
 
     steps:
     - uses: actions/checkout@v3
@@ -30,13 +33,10 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     - name: Initialize Terraform
-      working-directory: ${{ github.workspace}}
       run: terraform init
       
     - name: Generate Terraform Plan
-      working-directory: ${{ github.workspace}}
       run: terraform plan -out=tfplan
       
     - name: Apply Terraform Changes
-      working-directory: ${{ github.workspace}}
       run: terraform apply tfplan
