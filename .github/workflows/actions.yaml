@@ -30,13 +30,13 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     - name: Initialize Terraform
-      working-directory: /terraform
+      working-directory: ${{ github.workspace}}
       run: terraform init
       
     - name: Generate Terraform Plan
-      working-directory: /terraform
+      working-directory: ${{ github.workspace}}
       run: terraform plan -out=tfplan
       
     - name: Apply Terraform Changes
-      working-directory: /terraform
+      working-directory: ${{ github.workspace}}
       run: terraform apply tfplan
