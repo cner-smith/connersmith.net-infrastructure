@@ -14,6 +14,11 @@ variable "root_domain_bucket_name" {
   default = "connersmith.net"
 }
 
+# The name of the s3 bucket that will store the state file
+variable "backend_bucket_name" {
+  default = "connersmith.net-statefile"
+}
+
 # The name of the domain (used in the redirect bucket policy and website configuration).
 variable "domain_name" {
   default = "connersmith.net"

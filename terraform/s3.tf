@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "connersmith.net-statefile"
+    key    = "statefile.tfstate"
+    region = "us-east-1"
+  }
+}
+
 # Create an S3 bucket for the website.
 resource "aws_s3_bucket" "website" {
   bucket = var.website_bucket_name

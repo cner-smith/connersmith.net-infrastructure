@@ -34,9 +34,18 @@ jobs:
 
     - name: Initialize Terraform
       run: terraform init
-      
+    
+    - name: Import existing infrastructure
+      run: terraform state pull > statefile
+      if: success()
+
     - name: Generate Terraform Plan
       run: terraform plan -out=tfplan
       
     - name: Apply Terraform Changes
       run: terraform apply tfplan
+      if: success()
+  
+    - name: Push state file to S3
+      run: terraform state push terraform/terraform.tfstate
+      if: success()
