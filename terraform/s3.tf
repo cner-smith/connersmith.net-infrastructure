@@ -141,6 +141,8 @@ resource "aws_route53_record" "website" {
 resource "aws_dynamodb_table" "visitor_count" {
   name = "visitor_count"
   hash_key = "id"
+  read_capacity = 20
+  write_capacity = 20
 
   attribute {
     name = "id"
@@ -163,14 +165,7 @@ resource "aws_api_gateway_method" "visitor_count_get" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_resource.visitor_count_resource.id
   http_method = "GET"
-}
-
-# Triggers a Lambda Function to retrieve data from the DynamoDB table
-resource "aws_lambda_function" "visitor_count_lambda" {
-  function_name = "visitor_count_lambda"
-  handler = "index.handler"
-  runtime = "nodejs14.x"
-  filename = "visitor_count_lambda.zip"
+  authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "visitor_count_integration" {
@@ -182,16 +177,62 @@ resource "aws_api_gateway_integration" "visitor_count_integration" {
   uri = aws_lambda_function.visitor_count_lambda.invoke_arn
 }
 
-# Create the Lambda Function
+resource "aws_api_gateway_deployment" "visitor_count_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
+
+  triggers = {
+    # NOTE: The configuration below will satisfy ordering considerations,
+    #       but not pick up all future REST API changes. More advanced patterns
+    #       are possible, such as using the filesha1() function against the
+    #       Terraform configuration file(s) or removing the .id references to
+    #       calculate a hash against whole resources. Be aware that using whole
+    #       resources will show a difference after the initial implementation.
+    #       It will stabilize to only change when resources change afterwards.
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.visitor_count_resource.id,
+      aws_api_gateway_method.visitor_count_get.id,
+      aws_api_gateway_integration.visitor_count_integration.id,
+    ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_stage" "visitor_count_gateway" {
+  deployment_id = aws_api_gateway_deployment.visitor_count_deployment.id
+  rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
+  stage_name    = "visitor count gateway stage"
+}
+
+resource "aws_iam_role" "iam_for_lambda" {
+  name = "iam_for_lambda"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+# Triggers a Lambda Function to retrieve data from the DynamoDB table
 resource "aws_lambda_function" "visitor_count_lambda" {
   function_name = "visitor_count_lambda"
   handler = "index.handler"
   runtime = "nodejs14.x"
   filename = "visitor_count_lambda.zip"
-}
-
-data "aws_dynamodb_table" "visitor_count" {
-  name = "visitor_count"
+  role = aws_iam_role.iam_for_lambda.arn
 }
 
 resource "aws_lambda_permission" "visitor_count_lambda_permission" {
