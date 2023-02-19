@@ -255,7 +255,8 @@ resource "aws_lambda_permission" "visitor_count_lambda_permission" {
   statement_id = "AllowExecutionFromAPIGateway"
   action = "lambda:InvokeFunction"
   function_name = aws_lambda_function.visitor_count_lambda.function_name
-  principal = aws_api_gateway_resource.visitor_count_gateway.arn
+  principal = "apigateway.amazonaws.com"
+  source_arn = "${aws_api_gateway_rest_api.visitor_count_api.arn}/*/*/*"
 }
 
 # Get the API gateway enpoint url
