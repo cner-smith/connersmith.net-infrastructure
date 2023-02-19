@@ -30,13 +30,13 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     - name: Initialize Terraform
-      working-directory: /connersmith.net-infrastructure/terraform
+      working-directory: /terraform
       run: terraform init
       
     - name: Generate Terraform Plan
-      working-directory: /connersmith.net-infrastructure/terraform
+      working-directory: /terraform
       run: terraform plan -out=tfplan
       
     - name: Apply Terraform Changes
-      working-directory: /connersmith.net-infrastructure/terraform
+      working-directory: /terraform
       run: terraform apply tfplan
