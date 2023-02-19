@@ -45,7 +45,3 @@ jobs:
     - name: Apply Terraform Changes
       run: terraform apply tfplan
       if: success()
-  
-    - name: Push state file to S3
-      run: terraform state push connersmith.net-statefile/statefile.tfstate
-      if: success()
