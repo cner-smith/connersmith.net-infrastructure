@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "connersmith.net-statefile"
+    bucket = var.backend_bucket_name
     key    = "statefile.tfstate"
     region = "us-east-1"
   }
@@ -116,9 +116,9 @@ resource "aws_cloudfront_distribution" "website" {
 }
 
 # Create a Route53 hosted zone for the domain.
-resource "aws_route53_zone" "primary" {
-  name = var.domain_name
-}
+#resource "aws_route53_zone" "primary" {
+#  name = var.domain_name
+#}
 
 # Create an ACM certificate for the domain.
 resource "aws_acm_certificate" "primary" {
@@ -147,18 +147,19 @@ resource "aws_route53_record" "website" {
 
 # Create a DynamoDB table to store the visitor count
 resource "aws_dynamodb_table" "visitor_count" {
-  name = "visitor_count"
-  hash_key = "id"
-  read_capacity = 20
-  write_capacity = 20
+  name           = var.aws_dynamodb_table_name
+  hash_key       = "id"
+  read_capacity  = 5
+  write_capacity = 5
 
   attribute {
-    name = "id"
+    name = "site_id"
     type = "S"
   }
 
-  lifecycle {
-    prevent_destroy = true
+  attribute {
+    name = "visitor_count"
+    type = "N"
   }
 }
 
@@ -169,24 +170,24 @@ resource "aws_api_gateway_rest_api" "visitor_count_api" {
 
 resource "aws_api_gateway_resource" "visitor_count_resource" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  parent_id = aws_api_gateway_rest_api.visitor_count_api.root_resource_id
-  path_part = "visitor-count"
+  parent_id   = aws_api_gateway_rest_api.visitor_count_api.root_resource_id
+  path_part   = "visitor_count"
 }
 
 resource "aws_api_gateway_method" "visitor_count_get" {
-  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id = aws_api_gateway_resource.visitor_count_resource.id
-  http_method = "GET"
+  rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id   = aws_api_gateway_resource.visitor_count_resource.id
+  http_method   = "GET"
   authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "visitor_count_integration" {
-  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id = aws_api_gateway_resource.visitor_count_resource.id
-  http_method = aws_api_gateway_method.visitor_count_get.http_method
+  rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id             = aws_api_gateway_resource.visitor_count_resource.id
+  http_method             = aws_api_gateway_method.visitor_count_get.http_method
   integration_http_method = "POST"
-  type = "AWS_PROXY"
-  uri = aws_lambda_function.visitor_count_lambda.invoke_arn
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.visitor_count_lambda.invoke_arn
 }
 
 resource "aws_api_gateway_deployment" "visitor_count_deployment" {
@@ -218,6 +219,7 @@ resource "aws_api_gateway_stage" "visitor_count_gateway" {
   stage_name    = "visitor_count_gateway_stage"
 }
 
+# create iam role for Lambda functions
 resource "aws_iam_role" "iam_for_lambda" {
   name = "iam_for_lambda"
 
@@ -236,30 +238,26 @@ resource "aws_iam_role" "iam_for_lambda" {
   ]
 }
 EOF
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 # Triggers a Lambda Function to retrieve data from the DynamoDB table
 resource "aws_lambda_function" "visitor_count_lambda" {
   function_name = "visitor_count_lambda"
-  handler = "index.handler"
-  runtime = "nodejs14.x"
-  filename = "${path.module}/python/visitor_count_lambda.zip"
-  role = aws_iam_role.iam_for_lambda.arn
+  handler       = "index.lambda_handler"
+  runtime       = "nodejs18.x"
+  filename      = "${path.module}/python/lambda_visitor_count.zip"
+  role          = aws_iam_role.iam_for_lambda.arn
 }
 
 resource "aws_lambda_permission" "visitor_count_lambda_permission" {
-  statement_id = "AllowExecutionFromAPIGateway"
-  action = "lambda:InvokeFunction"
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.visitor_count_lambda.function_name
-  principal = "apigateway.amazonaws.com"
-  source_arn = "${aws_api_gateway_rest_api.visitor_count_api.arn}/*/*/*"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.visitor_count_api.arn}/*/*/*"
 }
 
-# Get the API gateway enpoint url
+# Get the API gateway endpoint url
 output "api_gateway_endpoint" {
   value = aws_api_gateway_deployment.visitor_count_deployment.invoke_url
 }

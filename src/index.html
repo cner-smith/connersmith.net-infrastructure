@@ -91,18 +91,17 @@
     </div>
     <div class="right"></div>
 
-    <script>
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', 'https://a2fykupf6i.execute-api.us-east-1.amazonaws.com/visitor_count_gateway_stage/');
-      xhr.send();
-      
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          var count = JSON.parse(xhr.responseText).count;
-          document.getElementById('visitor-count').innerHTML = count;
-        }
-      }
-    </script>
+    <p class="counter"> The number of visitors to this website is </p>
+  <p id ="body"></p>
+      <script type = "text/javascript">
+        var apiUrl = "https://8pl71h57qj.execute-api.us-east-1.amazonaws.com/visitor_count_gateway_stage/";
+            fetch(apiUrl)
+               .then(response => response.json())
+               .then(data =>{
+                    var count = document.getElementById('body');
+                count.innerHTML = data.body;
+                console.log(data)});
+         </script>
     
     <div id="visitor-count"></div>
     

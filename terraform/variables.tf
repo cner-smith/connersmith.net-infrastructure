@@ -24,6 +24,10 @@ variable "domain_name" {
   default = "connersmith.net"
 }
 
+variable "aws_dynamodb_table_name" {
+  default = "visitor_count"
+}
+
 # Common tags to apply to both S3 buckets.
 variable "common_tags" {
   default = {

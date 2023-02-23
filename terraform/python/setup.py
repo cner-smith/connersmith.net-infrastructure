@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='visitor_count_lambda',
+    name='lambda_visitor_count',
     version='1.0',
     packages=find_packages(),
     zip_safe=False
