@@ -28,6 +28,10 @@ variable "aws_dynamodb_table_name" {
   default = "visitor_count"
 }
 
+variable "aws_route53_zone_id" {
+  default = "Z07495993NV7L4YBV4KB7"
+}
+
 # Common tags to apply to both S3 buckets.
 variable "common_tags" {
   default = {

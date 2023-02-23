@@ -107,11 +107,6 @@ resource "aws_cloudfront_distribution" "website" {
   tags = var.common_tags
 }
 
-# Create a Route53 hosted zone for the domain.
-resource "aws_route53_zone" "primary" {
-  name = var.domain_name
-}
-
 # Create an ACM certificate for the domain.
 resource "aws_acm_certificate" "primary" {
   provider                  = aws.acm_provider
@@ -126,7 +121,7 @@ resource "aws_acm_certificate" "primary" {
 
 # Create a DNS record for the domain that points to the CloudFront distribution.
 resource "aws_route53_record" "website" {
-  zone_id = aws_route53_zone.primary.zone_id
+  zone_id = var.aws_route53_zone_id
   name    = var.domain_name
   type    = "A"
 
