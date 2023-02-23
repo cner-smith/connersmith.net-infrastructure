@@ -148,7 +148,8 @@ resource "aws_route53_record" "website" {
 # Create a DynamoDB table to store the visitor count
 resource "aws_dynamodb_table" "visitor_count" {
   name           = var.aws_dynamodb_table_name
-  hash_key       = "id"
+  hash_key       = "site_id"
+  sort_key       = "visitor_count"
   read_capacity  = 5
   write_capacity = 5
 

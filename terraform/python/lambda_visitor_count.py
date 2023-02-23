@@ -13,7 +13,7 @@ table = dynamodb.Table(ddbName)
 #returns the latest value
 def get_count():
    response = table.query(
-       KeyConditionExpression=Key('id').eq('site_id')
+       KeyConditionExpression=Key('site_id').eq('site_id')
        )
    count = response['Items'][0]['visitor_count']
    return count
@@ -26,7 +26,6 @@ def lambda_handler(event, context):
    response = table.update_item(     
        Key={        
            'id': 'site_id',
-           'hits': 0
        },   
        UpdateExpression='ADD ' + 'visitor_count' + ' :incr',
        ExpressionAttributeValues={        
