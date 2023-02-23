@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = var.backend_bucket_name
+    bucket = "connersmith.net-statefile"
     key    = "statefile.tfstate"
     region = "us-east-1"
   }
