@@ -8,8 +8,6 @@ ddbName = "${var.aws_dynamodb_table_name}"
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(ddbName) 
 
-
-
 #returns the latest value
 def get_count():
    response = table.query(
@@ -17,9 +15,6 @@ def get_count():
        )
    count = response['Items'][0]['visitor_count']
    return count
-
-#get the updated visitor count
-   count = get_count()
 
 #increment the visits value
 def lambda_handler(event, context):
@@ -43,5 +38,5 @@ def lambda_handler(event, context):
            'Access-Control-Allow-Credentials': 'true',
            'Content-Type': 'application/json'
        },
-       'body': count
+       'body': get_count()
    }

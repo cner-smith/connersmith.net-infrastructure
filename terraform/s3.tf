@@ -6,6 +6,11 @@ terraform {
   }
 }
 
+# create backend bucket
+resource "aws_s3_bucket" backend {
+  bucket = var.backend_bucket_name
+}
+
 # Create an S3 bucket for the website.
 resource "aws_s3_bucket" "website" {
   bucket = var.website_bucket_name
@@ -156,21 +161,6 @@ resource "aws_dynamodb_table" "visitor_count" {
     name = "site_id"
     type = "S"
   }
-
-  attribute {
-    name = "visitor_count"
-    type = "N"
-  }
-
-  global_secondary_index {
-    name               = "visitor_count_index"
-    hash_key           = "visitor_count"
-    projection_type    = "ALL"
-    write_capacity     = 1
-    read_capacity      = 1
-
-    non_key_attributes = ["site_id"]
-  }
 }
 
 # Create an API Gateway endpoint
@@ -251,8 +241,8 @@ EOF
 }
 
 # Triggers a Lambda Function to retrieve data from the DynamoDB table
-resource "aws_lambda_function" "visitor_count_lambda" {
-  function_name = "visitor_count_lambda"
+resource "aws_lambda_function" "lambda_visitor_count" {
+  function_name = "lambda_visitor_Count"
   handler       = "index.lambda_handler"
   runtime       = "nodejs18.x"
   filename      = "${path.module}/python/lambda_visitor_count.zip"
@@ -262,7 +252,7 @@ resource "aws_lambda_function" "visitor_count_lambda" {
 resource "aws_lambda_permission" "visitor_count_lambda_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.visitor_count_lambda.function_name
+  function_name = aws_lambda_function.lambda_visitor_count.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.visitor_count_api.arn}/*/*/*"
 }
