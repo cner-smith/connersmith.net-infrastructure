@@ -174,7 +174,7 @@ resource "aws_api_gateway_integration" "visitor_count_integration" {
   http_method             = aws_api_gateway_method.visitor_count_get.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.visitor_count_lambda.invoke_arn
+  uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
 }
 
 resource "aws_api_gateway_deployment" "visitor_count_deployment" {
