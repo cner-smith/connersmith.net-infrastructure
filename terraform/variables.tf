@@ -29,7 +29,7 @@ variable "aws_dynamodb_table_name" {
 }
 
 variable "aws_route53_zone_id" {
-  default = "Z07495993NV7L4YBV4KB7"
+  default = "Z09221043M6GRJ1HICC5B"
 }
 
 # Common tags to apply to both S3 buckets.
