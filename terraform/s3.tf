@@ -149,8 +149,8 @@ resource "aws_route53_record" "website" {
 resource "aws_dynamodb_table" "visitor_count" {
   name           = var.aws_dynamodb_table_name
   hash_key       = "site_id"
-  read_capacity  = 5
-  write_capacity = 5
+  read_capacity  = 1
+  write_capacity = 1
 
   attribute {
     name = "site_id"
@@ -160,6 +160,16 @@ resource "aws_dynamodb_table" "visitor_count" {
   attribute {
     name = "visitor_count"
     type = "N"
+  }
+
+  global_secondary_index {
+    name               = "visitor_count_index"
+    hash_key           = "visitor_count"
+    projection_type    = "ALL"
+    write_capacity     = 1
+    read_capacity      = 1
+
+    non_key_attributes = ["site_id"]
   }
 }
 

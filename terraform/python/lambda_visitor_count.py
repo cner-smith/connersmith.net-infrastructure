@@ -25,7 +25,7 @@ def get_count():
 def lambda_handler(event, context):
    response = table.update_item(     
        Key={        
-           'id': 'site_id',
+           'site_id': 'site_id',
        },   
        UpdateExpression='ADD ' + 'visitor_count' + ' :incr',
        ExpressionAttributeValues={        
