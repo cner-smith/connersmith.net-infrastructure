@@ -1,11 +1,3 @@
-terraform {
-  backend "s3" {
-    bucket = "connersmith.net-statefile"
-    key    = "statefile.tfstate"
-    region = "us-east-1"
-  }
-}
-
 # create backend bucket
 resource "aws_s3_bucket" backend {
   bucket = var.backend_bucket_name
@@ -255,6 +247,14 @@ resource "aws_lambda_permission" "visitor_count_lambda_permission" {
   function_name = aws_lambda_function.lambda_visitor_count.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.visitor_count_api.arn}/*/*/*"
+}
+
+terraform {
+  backend "s3" {
+    bucket = "connersmith.net-statefile"
+    key    = "statefile.tfstate"
+    region = "us-east-1"
+  }
 }
 
 # Get the API gateway endpoint url
