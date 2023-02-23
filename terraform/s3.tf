@@ -1,8 +1,3 @@
-# create backend bucket
-resource "aws_s3_bucket" backend {
-  bucket = var.backend_bucket_name
-}
-
 # Create an S3 bucket for the website.
 resource "aws_s3_bucket" "website" {
   bucket = var.website_bucket_name
