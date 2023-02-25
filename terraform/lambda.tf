@@ -19,23 +19,61 @@ resource "aws_iam_role" "iam_for_lambda" {
 EOF
 }
 
+resource "aws_iam_policy" "iam_policy_for_lambda" {
+  depends_on = [
+    aws_dynamodb_table.visitor_count
+  ]
+
+  name        = "aws_iam_policy_for_terraform_aws_lambda_role"
+  path        = "/"
+  description = "AWS IAM Policy for managing aws lambda role"
+  policy      = <<EOF
+ {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1677346969555",
+      "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+      ],
+      "Effect": "Allow",
+      "Resource": "${aws_dynamodb_table.visitor_count.arn}"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_iam_role" {
+  role       = aws_iam_role.iam_for_lambda.name
+  policy_arn = aws_iam_policy.iam_policy_for_lambda.arn
+}
+
+data "archive_file" "zip_the_python_code" {
+  type        = "zip"
+  source_dir  = "${path.module}/backend/"
+  output_path = "${path.module}/backend/visitor_count.zip"
+}
+
 # Triggers a Lambda Function to retrieve data from the DynamoDB table
 resource "aws_lambda_function" "lambda_visitor_count" {
-  function_name = "lambda_visitor_Count"
-   # The bucket name as created earlier with "aws s3api create-bucket"
+  function_name = "lambda_visitor_count"
+
   s3_bucket = aws_s3_bucket.artifact_repo.bucket
   s3_key    = aws_s3_bucket.artifact_repo.arn
-
-  # "main" is the filename within the zip file (main.js) and "handler"
-  # is the name of the property under which the handler function was
-  # exported in that file.
-  handler = "app.lambda_handler"
-  runtime = "python3.8"
-  role          = aws_iam_role.iam_for_lambda.arn
+  handler    = "app.lambda_handler"
+  runtime    = "python3.8"
+  role       = aws_iam_role.iam_for_lambda.arn
+  depends_on = [aws_iam_role_policy_attachment.attach_iam_policy_to_iam_role]
 
   environment {
     variables = {
-      DYNAMOTABLE = aws_dynamodb_table.visitor_count.name
+      DYNAMOTABLE = "${aws_dynamodb_table.visitor_count.name}"
     }
   }
 }

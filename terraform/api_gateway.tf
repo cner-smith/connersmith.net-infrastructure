@@ -49,10 +49,10 @@ resource "aws_api_gateway_deployment" "visitor_count_deployment" {
   ]
 
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  }
+}
 
 resource "aws_api_gateway_domain_name" "api" {
-  certificate_arn = var.acm_id
+  certificate_arn = aws_acm_certificate.default.arn
   domain_name     = "api.${var.domain_name}"
 }
 
@@ -60,7 +60,7 @@ resource "aws_api_gateway_base_path_mapping" "hit" {
   api_id      = aws_api_gateway_rest_api.visitor_count_api.id
   stage_name  = aws_api_gateway_deployment.visitor_count_deployment.stage_name
   domain_name = aws_api_gateway_domain_name.api.domain_name
-  base_path = "Prod"
+  base_path   = "Prod"
 }
 
 # Get the API gateway endpoint url

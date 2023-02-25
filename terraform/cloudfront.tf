@@ -1,7 +1,7 @@
 # Create a CloudFront distribution for the website.
 resource "aws_cloudfront_distribution" "website" {
   origin {
-    domain_name = aws_s3_bucket.root_bucket.bucket_regional_domain_name
+    domain_name = "${aws_s3_bucket.root_bucket.bucket_regional_domain_name}"
     origin_id   = "S3-${aws_s3_bucket.root_bucket.id}"
 
     custom_origin_config {
@@ -50,7 +50,7 @@ resource "aws_cloudfront_distribution" "website" {
 
   # Use the default CloudFront SSL certificate.
   viewer_certificate {
-    acm_certificate_arn      = var.acm_id
+    acm_certificate_arn      = "${aws_acm_certificate.default.arn}"
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }
@@ -62,4 +62,20 @@ resource "aws_cloudfront_distribution" "website" {
   }
 
   tags = var.common_tags
+}
+
+resource "aws_acm_certificate" "default" {
+  provider                  = aws.acm
+  domain_name               = var.domain_name
+  subject_alternative_names = ["*.${var.domain_name}"]
+  validation_method         = "DNS"
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_acm_certificate_validation" "default" {
+  provider        = aws.acm
+  certificate_arn = "${aws_acm_certificate.default.arn}"
+  validation_record_fqdns = [for record in aws_route53_record.validation : record.fqdn]
 }

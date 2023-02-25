@@ -18,3 +18,20 @@ resource "aws_route53_record" "main-c-name" {
   ttl     = "300"
   records = ["${var.domain_name}"]
 }
+
+resource "aws_route53_record" "validation" {
+  for_each = {
+    for dvo in aws_acm_certificate.default.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
+  allow_overwrite = true
+  name            = each.value.name
+  records         = [each.value.record]
+  ttl             = 300
+  type            = each.value.type
+  zone_id         = var.aws_route53_zone_id
+}
