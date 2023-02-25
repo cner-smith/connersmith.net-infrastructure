@@ -2,7 +2,7 @@
 # to the www version of the domain.
 resource "aws_s3_bucket" "root_bucket" {
   bucket = var.root_domain_bucket_name
-  tags = var.common_tags
+  tags   = var.common_tags
 }
 
 resource "aws_s3_bucket_website_configuration" "root_bucket_config" {
