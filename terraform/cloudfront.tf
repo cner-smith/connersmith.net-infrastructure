@@ -39,7 +39,7 @@ resource "aws_cloudfront_distribution" "website" {
   }
 
   # Set the CloudFront distribution to use the www version of the domain.
-  aliases = ["www.${var.domain_name}"]
+  aliases = ["www.${var.domain_name}", "${var.domain_name}"]
 
   custom_error_response {
     error_caching_min_ttl = 0
