@@ -1,7 +1,7 @@
 # Create a DNS record for the domain that points to the CloudFront distribution.
 resource "aws_route53_record" "website" {
   zone_id = var.aws_route53_zone_id
-  name    = "www.${var.domain_name}"
+  name    = var.domain_name
   type    = "A"
 
   alias {
