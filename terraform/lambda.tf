@@ -31,7 +31,7 @@ resource "aws_iam_policy" "iam_policy_for_lambda" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Sid" : "Stmt1677346969555",
+        "Sid" : "SpecificTable",
         "Action" : [
           "dynamodb:BatchGetItem",
           "dynamodb:BatchWriteItem",
