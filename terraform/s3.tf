@@ -2,23 +2,26 @@
 # to the www version of the domain.
 resource "aws_s3_bucket" "root_bucket" {
   bucket = var.root_domain_bucket_name
-
+  website {
+    index_document = "index.html"
+    error_document = "404.html"
+  }
   tags = var.common_tags
 }
 
-resource aws_s3_bucket_policy "root_bucket_policy" {
+resource "aws_s3_bucket_policy" "root_bucket_policy" {
   bucket = aws_s3_bucket.root_bucket.id
   policy = jsonencode({
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Sid": "Allow Public Access to All Objects",
-          "Effect": "Allow",
-          "Principal": "*",
-          "Action": "s3:GetObject",
-          "Resource": "arn:aws:s3:::${var.root_domain_bucket_name}/*"
-        }
-      ]
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "Allow Public Access to All Objects",
+        "Effect" : "Allow",
+        "Principal" : "*",
+        "Action" : "s3:GetObject",
+        "Resource" : "arn:aws:s3:::${var.root_domain_bucket_name}/*"
+      }
+    ]
   })
 }
 
