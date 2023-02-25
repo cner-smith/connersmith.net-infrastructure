@@ -1,4 +1,4 @@
-import boto3, json
+import json, boto3, os
 from botocore.exceptions import ClientError
 
 def get_key(pid, intable, dynamodb=None):
@@ -28,7 +28,9 @@ def get_key(pid, intable, dynamodb=None):
 
 def lambda_handler(event, context):
 
-    TABLEVAR = os.getenv('DYNAMOTABLE')
+    #name of the table
+    TABLEVAR = "visitor_count"
+    #calls get_key to retrieve and update the value of hits
     hits = get_key("index",TABLEVAR,)
     if hits:
         return {
@@ -48,7 +50,7 @@ def lambda_handler(event, context):
         "statusCode": 200,
          'headers': {
             'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': 'https://connersmith.net',
+            'Access-Control-Allow-Origin': 'connersmith.net',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
         },       
         "body": json.dumps({

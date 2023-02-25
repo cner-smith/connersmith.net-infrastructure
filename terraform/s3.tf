@@ -3,23 +3,23 @@
 resource "aws_s3_bucket" "root_bucket" {
   bucket = var.root_domain_bucket_name
 
-  # Set the policy to allow redirects from the bucket.
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "Allow Public Access to All Objects",
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::${var.root_domain_bucket_name}/*"
-    }
-  ]
-}
-EOF
-
   tags = var.common_tags
+}
+
+resource aws_s3_bucket_policy "root_bucket_policy" {
+  bucket = aws_s3_bucket.root_bucket.id
+  policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "Allow Public Access to All Objects",
+          "Effect": "Allow",
+          "Principal": "*",
+          "Action": "s3:GetObject",
+          "Resource": "arn:aws:s3:::${var.root_domain_bucket_name}/*"
+        }
+      ]
+  })
 }
 
 resource "aws_s3_bucket_acl" "root_bucket_acl" {
@@ -49,12 +49,16 @@ resource "aws_s3_bucket_cors_configuration" "root_bucket" {
 resource "aws_s3_bucket" "redirect_bucket" {
   bucket = var.website_bucket_name
 
-  # Enable static website hosting and redirect all requests to the www domain.
-  website {
-    redirect_all_requests_to = "https://${var.domain_name}"
-  }
-
   tags = var.common_tags
+}
+
+resource "aws_s3_bucket_website_configuration" "redirect_bucket_config" {
+  bucket = aws_s3_bucket.redirect_bucket.id
+
+  # Enable static website hosting and redirect all requests to the www domain.
+  redirect_all_requests_to {
+    host_name = "https://${var.domain_name}"
+  }
 }
 
 resource "aws_s3_bucket_acl" "redirect_bucket_acl" {
@@ -72,11 +76,11 @@ resource "aws_s3_bucket_acl" "artifact_repo_acl" {
   acl    = "private"
 }
 
-resource "aws_s3_bucket_object" "lambda_file" {
-  bucket     = aws_s3_bucket.artifact_repo.id
-  key        = "visitor_count"
-  acl        = "public-read"
-  source     = "${path.module}/backend/visitor_count.zip"
+resource "aws_s3_object" "lambda_file" {
+  bucket = aws_s3_bucket.artifact_repo.id
+  key    = "visitor_count"
+  acl    = "public-read"
+  source = "${path.module}/backend/visitor_count.zip"
 }
 
 terraform {
