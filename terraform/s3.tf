@@ -2,11 +2,19 @@
 # to the www version of the domain.
 resource "aws_s3_bucket" "root_bucket" {
   bucket = var.root_domain_bucket_name
-  website {
-    index_document = "index.html"
-    error_document = "404.html"
-  }
   tags = var.common_tags
+}
+
+resource "aws_s3_bucket_website_configuration" "root_bucket_config" {
+  bucket = aws_s3_bucket.root_bucket.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "404.html"
+  }
 }
 
 resource "aws_s3_bucket_policy" "root_bucket_policy" {
