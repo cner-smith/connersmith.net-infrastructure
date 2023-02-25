@@ -25,7 +25,7 @@ resource "aws_lambda_function" "lambda_visitor_count" {
   s3_bucket     = aws_s3_bucket.artifact_repo.bucket
   handler       = "index.lambda_handler"
   runtime       = "nodejs18.x"
-  filename      = "${path.module}/python/lambda_visitor_count.zip"
+  filename      = "visitor_count"
   role          = aws_iam_role.iam_for_lambda.arn
 
   environment {
