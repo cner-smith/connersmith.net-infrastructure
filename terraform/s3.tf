@@ -68,7 +68,7 @@ resource "aws_s3_bucket_website_configuration" "redirect_bucket_config" {
 
   # Enable static website hosting and redirect all requests to the www domain.
   redirect_all_requests_to {
-    host_name = "https://${var.domain_name}"
+    host_name = "https://www.${var.domain_name}"
   }
 }
 
