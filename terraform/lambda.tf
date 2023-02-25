@@ -22,10 +22,15 @@ EOF
 # Triggers a Lambda Function to retrieve data from the DynamoDB table
 resource "aws_lambda_function" "lambda_visitor_count" {
   function_name = "lambda_visitor_Count"
-  s3_bucket     = aws_s3_bucket.artifact_repo.bucket
-  handler       = "index.lambda_handler"
-  runtime       = "nodejs18.x"
-  filename      = "visitor_count"
+   # The bucket name as created earlier with "aws s3api create-bucket"
+  s3_bucket = aws_s3_bucket.artifact_repo.bucket
+  s3_key    = aws_s3_bucket.artifact_repo.arn
+
+  # "main" is the filename within the zip file (main.js) and "handler"
+  # is the name of the property under which the handler function was
+  # exported in that file.
+  handler = "app.lambda_handler"
+  runtime = "python3.8"
   role          = aws_iam_role.iam_for_lambda.arn
 
   environment {
