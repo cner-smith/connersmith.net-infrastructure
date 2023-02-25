@@ -32,6 +32,10 @@ variable "aws_route53_zone_id" {
   default = "Z09221043M6GRJ1HICC5B"
 }
 
+variable "acm_id" {
+  default = "arn:aws:acm:us-east-1:760268051681:certificate/ed6079e4-45ac-4a0e-b324-a56539b5ba0d"
+}
+
 # Common tags to apply to both S3 buckets.
 variable "common_tags" {
   default = {
