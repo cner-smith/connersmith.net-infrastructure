@@ -4,7 +4,7 @@ resource "aws_s3_bucket" "root_bucket" {
   bucket = var.root_domain_bucket_name
   acl    = "public-read"
 
-  cors_rules {
+  cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["PUT", "POST"]
     allowed_origins = ["*"]
@@ -36,13 +36,7 @@ EOF
 resource "aws_s3_bucket" "redirect_bucket" {
   bucket = var.website_bucket_name
   acl    = "public-read"
-
-  # Enable static website hosting on the bucket.
-  website {
-    index_document = "index.html"
-    error_document = "404.html"
-  }
-
+  
   # Enable static website hosting and redirect all requests to the www domain.
   website {
     redirect_all_requests_to = "https://${var.domain_name}"

@@ -1,8 +1,8 @@
 # Create a CloudFront distribution for the website.
 resource "aws_cloudfront_distribution" "website" {
   origin {
-    domain_name = aws_s3_bucket.website.bucket_regional_domain_name
-    origin_id   = "S3-${aws_s3_bucket.website.id}"
+    domain_name = aws_s3_bucket.root_bucket.bucket_regional_domain_name
+    origin_id   = "S3-${aws_s3_bucket.root_bucket.id}"
 
     custom_origin_config {
       http_port              = 80
@@ -21,7 +21,7 @@ resource "aws_cloudfront_distribution" "website" {
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-${aws_s3_bucket.website.id}"
+    target_origin_id = "S3-${aws_s3_bucket.root_bucket.id}"
 
     forwarded_values {
       query_string = false
@@ -50,7 +50,7 @@ resource "aws_cloudfront_distribution" "website" {
 
   # Use the default CloudFront SSL certificate.
   viewer_certificate {
-    acm_certificate_arn      = acm_id
+    acm_certificate_arn      = var.acm_id
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }

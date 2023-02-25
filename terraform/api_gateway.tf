@@ -26,8 +26,8 @@ resource "aws_api_gateway_integration" "visitor_count_integration" {
 }
 
 resource "aws_api_gateway_method" "proxy_root" {
-  rest_api_id   = aws_api_gateway_rest_api.api.id
-  resource_id   = aws_api_gateway_rest_api.api.root_resource_id
+  rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id   = aws_api_gateway_rest_api.visitor_count_api.root_resource_id
   http_method   = "GET"
   authorization = "NONE"
 }
@@ -52,7 +52,7 @@ resource "aws_api_gateway_deployment" "visitor_count_deployment" {
   }
 
 resource "aws_api_gateway_domain_name" "api" {
-  certificate_arn = var.aws_acm_certificate.arn
+  certificate_arn = var.acm_id
   domain_name     = "api.${var.domain_name}"
 }
 

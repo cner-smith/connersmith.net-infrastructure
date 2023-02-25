@@ -12,13 +12,9 @@ resource "aws_route53_record" "website" {
 }
 
 resource "aws_route53_record" "main-c-name" {
-  zone_id = aws_route53_zone.hosted_zone.zone_id
+  zone_id = var.aws_route53_zone_id
   name    = "www"
   type    = "CNAME"
   ttl     = "300"
   records = ["${var.domain_name}"]
-}
-
-output "r53_ns" {
-  value = aws_route53_zone.hosted_zone.name_servers
 }

@@ -30,7 +30,7 @@ resource "aws_lambda_function" "lambda_visitor_count" {
 
   environment {
     variables = {
-      DYNAMOTABLE = aws.aws_dynamodb_table.visitor_count.name
+      DYNAMOTABLE = aws_dynamodb_table.visitor_count.name
     }
   }
 }
