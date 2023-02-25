@@ -42,7 +42,7 @@ resource "aws_iam_policy" "iam_policy_for_lambda" {
           "dynamodb:UpdateItem"
         ],
         "Effect" : "Allow",
-        "Resource" : "arn:aws:dynamodb:us-east-1:760268051681:table/${aws_dynamodb_table.visitor_count.arn}"
+        "Resource" : "arn:aws:dynamodb:*:*:table/${aws_dynamodb_table.visitor_count.name}"
       }
     ]
   })
