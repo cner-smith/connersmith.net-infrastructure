@@ -52,7 +52,7 @@ resource "aws_api_gateway_deployment" "visitor_count_deployment" {
 }
 
 resource "aws_api_gateway_domain_name" "api" {
-  certificate_arn = aws_acm_certificate.default.arn
+  certificate_arn = "${aws_acm_certificate_validation.default.certificate_arn}"
   domain_name     = "api.${var.domain_name}"
 }
 
