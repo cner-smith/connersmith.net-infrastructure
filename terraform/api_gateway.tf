@@ -16,6 +16,21 @@ resource "aws_api_gateway_method" "visitor_count_get" {
   authorization = "NONE"
 }
 
+resource "aws_api_gateway_method_response" "cors_method_response_200" {
+  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  http_method = aws_api_gateway_method.visitor_count_method.http_method
+  status_code = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+  }
+  depends_on = ["aws_api_gateway_method.visitor_count_get"]
+}
+
+
+
+
+
 resource "aws_api_gateway_integration" "visitor_count_integration" {
   rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id             = aws_api_gateway_resource.visitor_count_resource.id
@@ -23,6 +38,7 @@ resource "aws_api_gateway_integration" "visitor_count_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
+  depends_on              = ["aws_api_gateway_method.visitor_count_get", "aws_lambda_function.lambda_visitor_count"]
 }
 
 resource "aws_api_gateway_method" "proxy_root" {
@@ -47,7 +63,7 @@ resource "aws_api_gateway_deployment" "visitor_count_deployment" {
     aws_api_gateway_integration.visitor_count_integration,
     aws_api_gateway_integration.lambda_root,
   ]
-
+  stage_name  = "Dev"
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
 }
 
