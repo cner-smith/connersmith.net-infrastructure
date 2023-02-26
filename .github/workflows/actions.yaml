@@ -30,8 +30,9 @@ jobs:
       run: terraform plan -out=tfplan
       
     - name: Apply Terraform Changes
-      run: terraform apply tfplan
-      run: output = $(terraform output aws_cloudfront_distribution)
+      run: |
+        terraform apply tfplan
+        output = $(terraform output aws_cloudfront_distribution)
       if: success()
       with:
         terraform_wrapper: false
