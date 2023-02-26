@@ -32,7 +32,7 @@ jobs:
     - name: Apply Terraform Changes
       with:
         terraform_wrapper: false
-      run: |
+      uses: |
         terraform apply tfplan
         output = $(terraform output aws_cloudfront_distribution)
       if: success()
