@@ -30,12 +30,13 @@ jobs:
       run: terraform plan -out=tfplan
       
     - name: Apply Terraform Changes
+      with:
+        terraform_wrapper: false
       run: |
         terraform apply tfplan
         output = $(terraform output aws_cloudfront_distribution)
       if: success()
-      with:
-        terraform_wrapper: false
+      
 
     - name: Sync S3
       uses: jakejarvis/s3-sync-action@master
