@@ -27,10 +27,6 @@ resource "aws_api_gateway_method_response" "cors_method_response_200" {
   depends_on = [aws_api_gateway_method.visitor_count_get]
 }
 
-
-
-
-
 resource "aws_api_gateway_integration" "visitor_count_integration" {
   rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id             = aws_api_gateway_resource.visitor_count_resource.id
