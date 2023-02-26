@@ -35,11 +35,11 @@ resource "aws_iam_policy" "iam_policy_for_lambda" {
         "Action" : [
           "dynamodb:BatchGetItem",
           "dynamodb:BatchWriteItem",
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
+          "dynamodb:Get*",
+          "dynamodb:Put*",
           "dynamodb:Query",
           "dynamodb:Scan",
-          "dynamodb:UpdateItem"
+          "dynamodb:Update*"
         ],
         "Effect" : "Allow",
         "Resource" : "arn:aws:dynamodb:*:*:table/${aws_dynamodb_table.visitor_count.name}"

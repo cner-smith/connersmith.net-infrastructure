@@ -9,10 +9,9 @@ def get_key(pid, intable, dynamodb=None):
 
     try:
         response = table.update_item(
-            Key={
-                "site-id": "index"
-            },
-            UpdateExpression='ADD hitcount :inc',
+            TableName=intable,
+            Key={"site_id": pid},
+            UpdateExpression='ADD hits :inc',
             ExpressionAttributeValues={
                 ':inc': 1
             },
@@ -23,15 +22,11 @@ def get_key(pid, intable, dynamodb=None):
     else:
         return response
 
-
-
-
 def lambda_handler(event, context):
-
     #name of the table
     TABLEVAR = "visitor_count"
     #calls get_key to retrieve and update the value of hits
-    hits = get_key("index",TABLEVAR,)
+    hits = get_key("connersmith.net", TABLEVAR)
     if hits:
         return {
             "statusCode": 200,
@@ -41,16 +36,14 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
             },       
             "body": json.dumps({
-                "count": str(hits['Attributes']['hitcount']),
+                "count": str(hits['Attributes']['hits']),
             }),
         }
-
-
     return {
         "statusCode": 200,
          'headers': {
             'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': 'connersmith.net',
+            'Access-Control-Allow-Origin': 'https://connersmith.net',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
         },       
         "body": json.dumps({
