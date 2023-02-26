@@ -94,13 +94,16 @@
     <p class="counter"> The number of visitors to this website is </p>
   <p id ="body"></p>
       <script type = "text/javascript">
-        var apiUrl = "https://wr4x7tvoib.execute-api.us-east-1.amazonaws.com//visitor_count_deployment";
-            fetch(apiUrl)
-               .then(response => response.json())
-               .then(data =>{
-                    var count = document.getElementById('body');
-                count.innerHTML = data.body;
-                console.log(data)});
+        fetch("https://wr4x7tvoib.execute-api.us-east-1.amazonaws.com//visitor_count_deployment")
+          .then((response) => response.json())
+          .then((number) => showCount(number));
+
+        showCount = (number) => {
+          const numberDiv = document.querySelector("#hit-count");
+          const numberElement = document.createElement("p");
+          numberElement.innerText = `Hit Count: ${number.count}`;
+          numberDiv.append(numberElement);
+        };
          </script>
     
     <div id="visitor-count"></div>
