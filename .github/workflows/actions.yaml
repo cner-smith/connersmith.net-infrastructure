@@ -30,6 +30,7 @@ jobs:
       run: terraform plan -out=tfplan
       
     - name: Apply Terraform Changes
+      uses: hashicorp/setup-terraform@v1
       with:
         terraform_wrapper: false
       run: |
