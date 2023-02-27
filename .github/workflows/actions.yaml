@@ -23,6 +23,11 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_wrapper: false
+
     - name: Initialize Terraform
       run: terraform init
 
@@ -30,13 +35,13 @@ jobs:
       run: terraform plan -out=tfplan
       
     - name: Apply Terraform Changes
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_wrapper: false
-      run: |
-        terraform apply tfplan
-        output=$(terraform output aws_cloudfront_distribution)
+      run: terraform apply tfplan
       if: success()
+
+    - name: Call terraform output
+      run: |
+        output=$(terraform output aws_cloudfront_distribution)
+        echo $output
       
     - name: Sync S3
       uses: jakejarvis/s3-sync-action@master
