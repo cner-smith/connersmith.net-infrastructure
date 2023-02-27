@@ -42,11 +42,6 @@ jobs:
         output=$(terraform output aws_cloudfront_distribution)
         echo $output >> $GITHUB_OUTPUT
       if: success()
-
-    - name: Call terraform output
-      run: |
-        output=$(terraform output aws_cloudfront_distribution)
-        echo $output
       
     - name: Sync S3
       uses: jakejarvis/s3-sync-action@master
