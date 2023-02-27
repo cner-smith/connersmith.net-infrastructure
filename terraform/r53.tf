@@ -12,7 +12,7 @@ resource "aws_route53_record" "website" {
 }
 
 resource "aws_route53_record" "api_record" {
-  zone_id = aws_api_gateway_domain_name.api.cloudfront_zone_id
+  zone_id = "Z2FDTNDATAQYW2"
   name    = aws_api_gateway_domain_name.api.domain_name
   type    = "A"
 
