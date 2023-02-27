@@ -94,7 +94,7 @@
             fetch(apiUrl)
                .then(response => response.json())
                .then(data =>{
-                    var count = data.hits.toString();
+                    var count = data.hits;
                 document.getElementById('hits').innerHTML = count;
                 console.log(data)});
          </script>
