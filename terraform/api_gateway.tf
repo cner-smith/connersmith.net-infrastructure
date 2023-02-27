@@ -66,11 +66,7 @@ resource "aws_api_gateway_deployment" "visitor_count_deployment" {
 resource "aws_api_gateway_domain_name" "api" {
   domain_name     = "api.${var.domain_name}"
   certificate_arn = aws_acm_certificate_validation.default.certificate_arn
-  security_policy = "TLS_1_2"
 
-  endpoint_configuration {
-    types   = ["REGIONAL"]
-  }
 
   depends_on = [aws_acm_certificate_validation.default]
 }
