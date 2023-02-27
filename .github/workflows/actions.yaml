@@ -12,6 +12,8 @@ jobs:
     defaults:
       run:
         working-directory: ${{ github.workspace }}/terraform
+    outputs:
+      output1: ${{ steps.Call_terraform_output.outputs.distro }}
 
     steps:
     - uses: actions/checkout@v3
@@ -35,7 +37,10 @@ jobs:
       run: terraform plan -out=tfplan
       
     - name: Apply Terraform Changes
-      run: terraform apply tfplan
+      run: |
+        terraform apply tfplan
+        output=$(terraform output aws_cloudfront_distribution)
+        echo $output >> $GITHUB_OUTPUT
       if: success()
 
     - name: Call terraform output
@@ -55,7 +60,7 @@ jobs:
     - name: Cache Invalidation
       uses: chetan/invalidate-cloudfront-action@v2
       env:
-        DISTRIBUTION: ${{ output }}
+        DISTRIBUTION: ${{ needs.Call_terraform_output.outputs.output1 }}
         PATHS: "/index.html"
         AWS_REGION: "us-east-1"
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
