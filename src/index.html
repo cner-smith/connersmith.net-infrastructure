@@ -87,24 +87,19 @@
     <h4>Google</h4>
     <h4>01/2021 </h4>
     <h5>Credential ID 8ZZ2QPJ4SJSH</h5>
-    <p class="counter"> The number of visitors to this website is </p>
-     <p id ="hits"></p>
-      <script type = "text/javascript">
-        var apiUrl = "https://api.connersmith.net/Prod/";
-            fetch(apiUrl)
-               .then(response => response.json())
-               .then(data =>{
-                    var count = data.hits;
-                document.getElementById('hits').innerHTML = count;
-                console.log(data)});
-         </script>
-    
-    <div id="visitor-count"></div>
+
+    <span id="visitor_counter"></span>
 
     </div>
     <div class="right"></div>
 
-    
+    <script>
+      fetch('https://api.connersmith.net') // You should change the link.
+        .then(response => response.json())
+        .then((data) => {
+        document.getElementById('connersmith.net').innerText = data.hits
+        })
+</script>
     
 </body>
 </html>
