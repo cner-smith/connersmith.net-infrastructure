@@ -5,14 +5,9 @@
   <link rel="stylesheet" href="resume_style.css">
 </head>
 <body>
-    <span id="connersmith.net"></span>
-    <script>
-      fetch('https://api.connersmith.net') // You should change the link.
-        .then(response => response.json())
-        .then((data) => {
-        document.getElementById('connersmith.net').innerText = data.hits
-        })
-    </script>
-    
+  <p id="visitors">&nbsp;</p>
 </body>
+
+<script src="js/scripts.js">
+</script>
 </html>
