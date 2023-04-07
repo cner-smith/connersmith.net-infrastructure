@@ -3,7 +3,7 @@ async function get_visitors() {
     // call post api request function
     //await post_visitor();
     try {
-        let response = await fetch('https://api.connersmith.net/', {
+        let response = await fetch('https://api.connersmith.net/Prod', {
             method: 'GET'
         });
         let data = await response.json()
