@@ -22,7 +22,11 @@ resource "aws_api_gateway_method_response" "cors_method_response_200" {
   http_method = aws_api_gateway_method.visitor_count_get.http_method
   status_code = "200"
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+  response_models = {
+    "application/json" = aws_api_gateway_model.visitor_count_model.id
   }
   depends_on = [aws_api_gateway_method.visitor_count_get]
 }
@@ -77,6 +81,38 @@ resource "aws_api_gateway_base_path_mapping" "hit" {
   domain_name = aws_api_gateway_domain_name.api.domain_name
   base_path   = "Prod"
 }
+
+resource "aws_api_gateway_model" "visitor_count_model" {
+  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
+  name        = "visitor_count_model"
+  content_type = "application/json"
+  schema = jsonencode({
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Visitor Count Schema",
+    "type": "object",
+    "properties": {
+      "hits": {
+        "type": "integer"
+      }
+    }
+  })
+}
+
+resource "aws_api_gateway_integration_response" "visitor_count_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  http_method = aws_api_gateway_method.visitor_count_get.http_method
+  status_code = "200"
+  response_templates = {
+    "application/json" = jsonencode({hits = "$context.authorizer.claims.hits"})
+  }
+  depends_on = [
+    aws_api_gateway_method.visitor_count_get,
+    aws_api_gateway_integration.lambda_root,
+  ]
+}
+
+
 
 # Get the API gateway endpoint url
 output "api_gateway_endpoint" {
