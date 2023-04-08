@@ -108,7 +108,7 @@ resource "aws_api_gateway_integration_response" "visitor_count_integration_respo
     "application/json" = jsonencode({ hits = "$context.authorizer.claims.hits" })
   }
   response_parameters = {
-      "method.response.header.Access-Control-Allow-Origin" = "'https://api.${var.domain_name}'",
+      "method.response.header.Access-Control-Allow-Origin" = "'https://${var.domain_name}'",
       "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
       "method.response.header.Access-Control-Allow-Methods" = "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
     }
