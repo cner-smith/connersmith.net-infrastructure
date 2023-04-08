@@ -68,7 +68,7 @@ resource "aws_api_gateway_deployment" "visitor_count_deployment" {
 }
 
 resource "aws_api_gateway_domain_name" "api" {
-  domain_name     = "https://${aws_api_gateway_resource.visitor_count_resource.id}.execute-api.us-east-1.amazonaws.com/Dev/"
+  domain_name     = "api.connersmith.net"
   certificate_arn = aws_acm_certificate_validation.default.certificate_arn
   aws_api_gateway_resource.visitor_count_resource.id
 
