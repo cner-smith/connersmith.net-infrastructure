@@ -22,10 +22,9 @@ resource "aws_api_gateway_method_response" "cors_method_response_200" {
   http_method = aws_api_gateway_method.visitor_count_get.http_method
   status_code = "200"
    response_parameters = {
-      "method.response.header.Access-Control-Allow-Origin" = true,
-      "method.response.header.Access-Control-Allow-Origin" = "https://connersmith.net",
-      "method.response.header.Access-Control-Allow-Headers" = true,
-      "method.response.header.Access-Control-Allow-Methods" = true
+      "method.response.header.Access-Control-Allow-Origin" = true
+      "method.response.header.Access-Control-Allow-Headers" = false,
+      "method.response.header.Access-Control-Allow-Methods" = false
     }
   response_models = {
     "application/json" = aws_api_gateway_model.visitor_count_model.name
@@ -109,7 +108,7 @@ resource "aws_api_gateway_integration_response" "visitor_count_integration_respo
     "application/json" = jsonencode({ hits = "$context.authorizer.claims.hits" })
   }
   response_parameters = {
-      "method.response.header.Access-Control-Allow-Origin" = "'*'",
+      "method.response.header.Access-Control-Allow-Origin" = "'https://api.${var.domain_name}'",
       "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
       "method.response.header.Access-Control-Allow-Methods" = "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
     }
