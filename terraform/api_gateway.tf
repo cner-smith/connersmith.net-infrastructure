@@ -88,7 +88,7 @@ resource "aws_api_gateway_model" "visitor_count_model" {
   content_type = "application/json"
   schema = jsonencode({
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Visitor Count Schema",
+    "title": "VisitorCountSchema",
     "type": "object",
     "properties": {
       "hits": {
