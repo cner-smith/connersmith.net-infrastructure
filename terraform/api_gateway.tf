@@ -22,9 +22,9 @@ resource "aws_api_gateway_method_response" "cors_method_response_200" {
   http_method = aws_api_gateway_method.visitor_count_get.http_method
   status_code = "200"
    response_parameters = {
-      "method.response.header.Access-Control-Allow-Origin" = true
-      "method.response.header.Access-Control-Allow-Headers" = false,
-      "method.response.header.Access-Control-Allow-Methods" = false
+      "method.response.header.Access-Control-Allow-Origin" = true,
+      "method.response.header.Access-Control-Allow-Headers" = true,
+      "method.response.header.Access-Control-Allow-Methods" = true
     }
   response_models = {
     "application/json" = aws_api_gateway_model.visitor_count_model.name
