@@ -4,6 +4,7 @@ async function get_visitors() {
         let response = await fetch('https://api.connersmith.net', {
             method: 'GET'
         });
+        console.log(response)
         let data = await response.json();
         if (data.hasOwnProperty('hits')) {
             document.getElementById("visitors").innerHTML = data['hits'] + " visits.";
