@@ -38,6 +38,7 @@ resource "aws_api_gateway_integration" "visitor_count_integration" {
   http_method             = aws_api_gateway_method.visitor_count_get.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
+  credentials = aws_iam_role.iam_for_lambda.arn
   uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
   depends_on              = [aws_api_gateway_method.visitor_count_get, aws_lambda_function.lambda_visitor_count]
 }
