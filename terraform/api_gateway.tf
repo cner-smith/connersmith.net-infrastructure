@@ -26,7 +26,7 @@ resource "aws_api_gateway_method_response" "cors_method_response_200" {
     "method.response.header.Access-Control-Allow-Origin"  = true
   }
   response_models = {
-    "application/json" = aws_api_gateway_model.visitorcountmodel.id
+    "application/json" = aws_api_gateway_model.visitor_count_model.name
   }
   depends_on = [aws_api_gateway_method.visitor_count_get]
 }
@@ -82,9 +82,9 @@ resource "aws_api_gateway_base_path_mapping" "hit" {
   base_path   = "Prod"
 }
 
-resource "aws_api_gateway_model" "visitorcountmodel" {
+resource "aws_api_gateway_model" "visitor_count_model" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  name        = "visitorcountmodel"
+  name        = "visitor_count_model"
   content_type = "application/json"
   schema = jsonencode({
     "$schema": "http://json-schema.org/draft-04/schema#",
