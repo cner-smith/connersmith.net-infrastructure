@@ -83,16 +83,16 @@ resource "aws_api_gateway_base_path_mapping" "hit" {
 }
 
 resource "aws_api_gateway_model" "visitor_count_model" {
-  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  name        = "visitorcountmodel"
+  rest_api_id  = aws_api_gateway_rest_api.visitor_count_api.id
+  name         = "visitorcountmodel"
   content_type = "application/json"
   schema = jsonencode({
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "VisitorCountSchema",
-    "type": "object",
-    "properties": {
-      "hits": {
-        "type": "integer"
+    "$schema" : "http://json-schema.org/draft-04/schema#",
+    "title" : "VisitorCountSchema",
+    "type" : "object",
+    "properties" : {
+      "hits" : {
+        "type" : "integer"
       }
     }
   })
@@ -104,7 +104,7 @@ resource "aws_api_gateway_integration_response" "visitor_count_integration_respo
   http_method = aws_api_gateway_method.visitor_count_get.http_method
   status_code = "200"
   response_templates = {
-    "application/json" = jsonencode({hits = "$context.authorizer.claims.hits"})
+    "application/json" = jsonencode({ hits = "$context.authorizer.claims.hits" })
   }
   depends_on = [
     aws_api_gateway_method.visitor_count_get,

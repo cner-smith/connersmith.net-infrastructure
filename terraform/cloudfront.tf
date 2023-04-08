@@ -82,5 +82,5 @@ resource "aws_acm_certificate_validation" "default" {
 
 # Get the API gateway endpoint url
 output "aws_cloudfront_distribution" {
-  value = "${aws_cloudfront_distribution.website.id}"
+  value = aws_cloudfront_distribution.website.id
 }
