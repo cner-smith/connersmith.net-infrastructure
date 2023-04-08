@@ -84,7 +84,7 @@ resource "aws_api_gateway_base_path_mapping" "hit" {
 
 resource "aws_api_gateway_model" "visitor_count_model" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  name        = "visitor_count_model"
+  name        = "visitorcountmodel"
   content_type = "application/json"
   schema = jsonencode({
     "$schema": "http://json-schema.org/draft-04/schema#",
