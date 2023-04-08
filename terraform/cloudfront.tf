@@ -12,9 +12,21 @@ resource "aws_cloudfront_distribution" "website" {
     }
   }
 
+  origin {
+    domain_name = "api.${var.domain_name}"
+    origin_id   = "api.${aws_s3_bucket.root_bucket.id}"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
+    }
+  }
+
   enabled             = true
   is_ipv6_enabled     = true
-  default_root_object = "index.html"
+  origin_path = "/Dev/*"
 
 
   # Use the default CloudFront cache behavior.
@@ -37,6 +49,28 @@ resource "aws_cloudfront_distribution" "website" {
     max_ttl                = 31536000
     compress               = true
   }
+
+  ordered_cache_behavior {
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "api.${aws_s3_bucket.root_bucket.id}"
+    path_pattern = "/api/*"
+
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 31536000
+    default_ttl            = 31536000
+    max_ttl                = 31536000
+    compress               = true
+  }
+
 
   # Set the CloudFront distribution to use the www version of the domain.
   aliases = ["www.${var.domain_name}", "${var.domain_name}"]
