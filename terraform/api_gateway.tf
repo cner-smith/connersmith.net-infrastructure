@@ -38,7 +38,7 @@ resource "aws_api_gateway_integration" "visitor_count_integration" {
   http_method             = aws_api_gateway_method.visitor_count_get.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  credentials = aws_iam_role.iam_for_lambda.arn
+  credentials = aws_iam_role.api_gateway_execution_role.arn
   uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
   depends_on              = [aws_api_gateway_method.visitor_count_get, aws_lambda_function.lambda_visitor_count]
 }
@@ -114,6 +114,37 @@ resource "aws_api_gateway_integration_response" "visitor_count_integration_respo
   ]
 }
 
+resource "aws_iam_role" "api_gateway_execution_role" {
+  name = "api_gateway_execution_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "apigateway.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  # Allow API Gateway to invoke Lambda functions
+  # Replace <lambda-arn> with the ARN of your Lambda function
+  # Replace <region> with the region your Lambda function is deployed in
+  # Replace <account-id> with your AWS account ID
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "lambda:InvokeFunction"
+        Effect = "Allow"
+        Resource = "arn:aws:lambda:${var.aws_region}:760268051681:function:${aws_lambda_function.lambda_visitor_count.name}"
+      }
+    ]
+  })
+}
 
 
 # Get the API gateway endpoint url
