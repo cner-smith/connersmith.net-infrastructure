@@ -27,6 +27,7 @@ resource "aws_cloudfront_distribution" "website" {
 
   enabled             = true
   is_ipv6_enabled     = true
+  default_root_object = "index.html"
   
 
 
