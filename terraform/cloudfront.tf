@@ -15,6 +15,7 @@ resource "aws_cloudfront_distribution" "website" {
   origin {
     domain_name = "api.${var.domain_name}"
     origin_id   = "api.${aws_s3_bucket.root_bucket.id}"
+    origin_path = "/Dev/*"
 
     custom_origin_config {
       http_port              = 80
@@ -26,7 +27,7 @@ resource "aws_cloudfront_distribution" "website" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  origin_path = "/Dev/*"
+  
 
 
   # Use the default CloudFront cache behavior.
