@@ -68,8 +68,9 @@ resource "aws_api_gateway_deployment" "visitor_count_deployment" {
 }
 
 resource "aws_api_gateway_domain_name" "api" {
-  domain_name     = "api.${var.domain_name}"
+  domain_name     = "https://${aws_api_gateway_resource.visitor_count_resource.id}.execute-api.us-east-1.amazonaws.com/Dev/"
   certificate_arn = aws_acm_certificate_validation.default.certificate_arn
+  aws_api_gateway_resource.visitor_count_resource.id
 
 
   depends_on = [aws_acm_certificate_validation.default]
