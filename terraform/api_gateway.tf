@@ -154,7 +154,7 @@ resource "aws_iam_policy" "iam_policy_for_gateway" {
       {
         Action = "lambda:InvokeFunction"
         Effect = "Allow"
-        Resource = "arn:aws:lambda:${var.aws_region}:760268051681:function:${aws_lambda_function.lambda_visitor_count.name}"
+        Resource = "arn:aws:lambda:${var.aws_region}:760268051681:function:${aws_lambda_function.lambda_visitor_count.function_name}"
       }
     ]
   })
