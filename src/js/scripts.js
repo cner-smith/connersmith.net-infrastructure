@@ -8,15 +8,16 @@ async function get_visitors() {
         });
         console.log(response)
         let data = await response.json();
+        data.value = data[0];
 
         // If the data object has a property named hits,
         // the value of hits is used to update the content of an HTML element with an ID of visitors.
         // Otherwise, an error message is logged to the console.
         console.log(data)
-        if (data.hasOwnProperty('connersmith.net')) {
-            document.getElementById("visitors").innerHTML = data['connersmith.net'] + " visits.";
+        if (data.hasOwnProperty("value")) {
+            document.getElementById("visitors").innerHTML = data.value + " visits.";
         } else {
-            console.error('Response from API is missing "hits" attribute.');
+            console.error('Response from API is missing "value" attribute.');
         }
         console.log(data);
         return data;
