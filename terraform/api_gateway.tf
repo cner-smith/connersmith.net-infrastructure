@@ -25,7 +25,7 @@ resource "aws_api_gateway_method" "visitor_count_get" {
 # It sets headers to allow Cross-Origin Resource Sharing (CORS) from any domain. 
 resource "aws_api_gateway_method_response" "cors_method_response_200" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  resource_id = aws_api_gateway_method.visitor_count_get.id
   http_method = aws_api_gateway_method.visitor_count_get.http_method
   status_code = "200"
   response_parameters = {
@@ -44,7 +44,7 @@ resource "aws_api_gateway_method_response" "cors_method_response_200" {
 # It forwards requests to a Lambda function, using the POST method with AWS_PROXY integration type.
 resource "aws_api_gateway_integration" "visitor_count_integration" {
   rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id             = aws_api_gateway_resource.visitor_count_resource.id
+  resource_id             = aws_api_gateway_method.visitor_count_get.id
   http_method             = aws_api_gateway_method.visitor_count_get.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
@@ -88,17 +88,18 @@ resource "aws_api_gateway_method" "options" {
 # meaning that it does not actually send requests to a backend service. Instead, it returns a fixed response that indicates which headers and methods are allowed.
 resource "aws_api_gateway_integration" "options" {
   rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id             = aws_api_gateway_resource.visitor_count_resource.id
+  resource_id             = aws_api_gateway_method.options.id
   http_method             = "OPTIONS"
   integration_http_method = "OPTIONS"
   type                    = "MOCK"
+  depends_on = [aws_api_gateway_method.options]
 }
 
 # creates a method response for the OPTIONS method. It specifies that the response should have a 200 status code,
 # and should include headers that indicate which headers and methods are allowed.
 resource "aws_api_gateway_method_response" "options" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  resource_id = aws_api_gateway_method.options.id
   http_method = "OPTIONS"
   status_code = "200"
 
@@ -107,6 +108,8 @@ resource "aws_api_gateway_method_response" "options" {
     "method.response.header.Access-Control-Allow-Methods" = true
     "method.response.header.Access-Control-Allow-Origin"  = true
   }
+
+  depends_on = [aws_api_gateway_method.options]
 }
 
 # creates an integration response for the OPTIONS method. It specifies that the response should have a 200 status code,
@@ -115,7 +118,7 @@ resource "aws_api_gateway_method_response" "options" {
 # but in this case the template is empty since this is a MOCK integration and the response is not generated dynamically.
 resource "aws_api_gateway_integration_response" "options" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  resource_id = aws_api_gateway_integration.options.id
   http_method = "OPTIONS"
   status_code = "200"
 
@@ -128,6 +131,8 @@ resource "aws_api_gateway_integration_response" "options" {
   response_templates = {
     "application/json" = ""
   }
+
+  depends_on = [aws_api_gateway_method.options]
 }
 
 # This resource creates a deployment for the API Gateway, which specifies the stage name and the REST API ID.
@@ -187,7 +192,7 @@ resource "aws_api_gateway_model" "visitor_count_model" {
 # in the response body of the API Gateway method. It also sets the CORS headers to allow requests from the domain specified in the ${var.domain_name} variable.
 resource "aws_api_gateway_integration_response" "visitor_count_integration_response" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  resource_id = aws_api_gateway_integration.visitor_count_integration.id
   http_method = aws_api_gateway_method.visitor_count_get.http_method
   status_code = "200"
   response_parameters = {
