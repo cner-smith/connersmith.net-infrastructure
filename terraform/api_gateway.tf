@@ -101,9 +101,9 @@ resource "aws_api_gateway_model" "visitor_count_model" {
 }
 
 resource "aws_api_gateway_integration_response" "visitor_count_integration_response" {
-  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id = aws_api_gateway_resource.visitor_count_resource.id
-  http_method = aws_api_gateway_method.visitor_count_get.http_method
+  rest_api_id = aws_api_gateway_integration.lambda_root.id
+  resource_id = aws_api_gateway_integration.lambda_root.id
+  http_method = aws_api_gateway_integration.lambda_root.http_method
   status_code = "200"
   response_parameters = {
       "method.response.header.Access-Control-Allow-Origin" = "'https://${var.domain_name}'",
