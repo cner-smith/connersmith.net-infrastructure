@@ -59,7 +59,6 @@ data "archive_file" "zip_the_python_code" {
   output_path = "${path.module}/backend/visitor_count.zip"
 }
 
-# Triggers a Lambda Function to retrieve data from the DynamoDB table
 resource "aws_lambda_function" "lambda_visitor_count" {
   function_name = "lambda_visitor_count"
 
