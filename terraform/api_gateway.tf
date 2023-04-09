@@ -21,51 +21,6 @@ resource "aws_api_gateway_method" "visitor_count_get" {
   authorization = "NONE"
 }
 
-# creates an OPTIONS method in the API Gateway REST API, which is used for CORS (Cross-Origin Resource Sharing) requests.
-resource "aws_api_gateway_method" "visitor_count_options_method" {
-  rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id   = aws_api_gateway_resource.visitor_count_resource.id
-  http_method   = "OPTIONS"
-  authorization = "NONE"
-}
-
-# creates a response for the OPTIONS method that was created in the previous block. This response returns an HTTP status code of 200.
-resource "aws_api_gateway_method_response" "visitor_count_options_method_response" {
-  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id = aws_api_gateway_resource.visitor_count_resource.id
-  http_method = aws_api_gateway_method.visitor_count_options_method.http_method
-  status_code = "200"
-}
-
-# creates an integration for the OPTIONS method that was created earlier.
-# This integration is a mock integration, which just returns a static response.
-# The request template specifies the format of the request that will be sent to the integration.
-resource "aws_api_gateway_integration" "visitor_count_options_method_integration" {
-  rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id             = aws_api_gateway_resource.visitor_count_resource.id
-  http_method             = aws_api_gateway_method.visitor_count_options_method.http_method
-  integration_http_method = "OPTIONS"
-  type                    = "MOCK"
-  request_templates = {
-    "application/json" = "{\"statusCode\": 200}"
-  }
-}
-
-# creates an integration response for an OPTIONS request on the API Gateway. 
-# It adds headers to allow Cross-Origin Resource Sharing (CORS) from any domain.
-resource "aws_api_gateway_integration_response" "visitor_count_options_method_integration_response" {
-  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id = aws_api_gateway_resource.visitor_count_resource.id
-  http_method = aws_api_gateway_method.visitor_count_options_method.http_method
-  status_code = aws_api_gateway_method_response.visitor_count_options_method_response.status_code
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-    "method.response.header.Access-Control-Allow-Origin"  = "'*'",
-    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET'"
-  }
-}
-
-
 # creates a method response for a GET request on the API Gateway. 
 # It sets headers to allow Cross-Origin Resource Sharing (CORS) from any domain. 
 resource "aws_api_gateway_method_response" "cors_method_response_200" {
@@ -167,16 +122,6 @@ resource "aws_api_gateway_model" "visitor_count_model" {
       }
     }
   })
-}
-
-# resource with the name "Empty" defines an empty JSON schema with no properties.
-# This is useful when the API Gateway method does not return any response,
-# so this model can be used as a placeholder for the method response.
-resource "aws_api_gateway_model" "empty_new" {
-  rest_api_id  = aws_api_gateway_rest_api.visitor_count_api.id
-  name         = "Emptynew"
-  content_type = "application/json"
-  schema       = ""
 }
 
 # resource defines a response for the API Gateway integration.
