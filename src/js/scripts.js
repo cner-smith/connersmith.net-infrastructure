@@ -12,6 +12,7 @@ async function get_visitors() {
         // If the data object has a property named hits,
         // the value of hits is used to update the content of an HTML element with an ID of visitors.
         // Otherwise, an error message is logged to the console.
+        console.log(response)
         if (data.hasOwnProperty('hits')) {
             document.getElementById("visitors").innerHTML = data['hits'] + " visits.";
         } else {
