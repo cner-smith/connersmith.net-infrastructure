@@ -164,9 +164,3 @@ resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_gateway_role" {
   role       = aws_iam_role.api_gateway_execution_role.name
   policy_arn = aws_iam_policy.iam_policy_for_gateway.arn
 }
-
-
-# Get the API gateway endpoint url
-output "api_gateway_endpoint" {
-  value = "${aws_api_gateway_deployment.visitor_count_deployment.invoke_url}/visitor_count_deployment"
-}
