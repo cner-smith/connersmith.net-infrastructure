@@ -76,7 +76,6 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  credentials             = aws_iam_role.api_gateway_execution_role.arn
   uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
 }
 
