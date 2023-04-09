@@ -29,9 +29,9 @@ resource "aws_api_gateway_method_response" "cors_method_response_200" {
   http_method = aws_api_gateway_method.visitor_count_get.http_method
   status_code = "200"
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = true,
-    "method.response.header.Access-Control-Allow-Headers" = true,
-    "method.response.header.Access-Control-Allow-Methods" = true,
+    "method.response.header.Access-Control-Allow-Origin"      = true,
+    "method.response.header.Access-Control-Allow-Headers"     = true,
+    "method.response.header.Access-Control-Allow-Methods"     = true,
     "method.response.header.Access-Control-Allow-Credentials" = true
   }
   response_models = {
@@ -67,12 +67,67 @@ resource "aws_api_gateway_integration" "lambda_root" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_method.proxy_root.resource_id
   http_method = aws_api_gateway_method.proxy_root.http_method
-  
-  credentials             = aws_iam_role.api_gateway_execution_role.arn
+
+  credentials = aws_iam_role.api_gateway_execution_role.arn
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
+}
+
+# creates an API Gateway method resource to handle HTTP OPTIONS requests.
+# It specifies that the method should have no authorization, and should be associated with a specific REST API and resource.
+resource "aws_api_gateway_method" "options" {
+  rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id   = aws_api_gateway_resource.visitor_count_resource.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+#  creates an API Gateway integration resource for the OPTIONS method. It specifies that the integration should be a MOCK integration,
+# meaning that it does not actually send requests to a backend service. Instead, it returns a fixed response that indicates which headers and methods are allowed.
+resource "aws_api_gateway_integration" "options" {
+  rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id             = aws_api_gateway_resource.visitor_count_resource.id
+  http_method             = "OPTIONS"
+  integration_http_method = "OPTIONS"
+  type                    = "MOCK"
+}
+
+# creates a method response for the OPTIONS method. It specifies that the response should have a 200 status code,
+# and should include headers that indicate which headers and methods are allowed.
+resource "aws_api_gateway_method_response" "options" {
+  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  http_method = "OPTIONS"
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+}
+
+# creates an integration response for the OPTIONS method. It specifies that the response should have a 200 status code,
+# and should include headers that indicate which headers and methods are allowed.
+# It also specifies a response template for the "application/json" content type,
+# but in this case the template is empty since this is a MOCK integration and the response is not generated dynamically.
+resource "aws_api_gateway_integration_response" "options" {
+  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  http_method = "OPTIONS"
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'POST,GET,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+
+  response_templates = {
+    "application/json" = ""
+  }
 }
 
 # This resource creates a deployment for the API Gateway, which specifies the stage name and the REST API ID.
