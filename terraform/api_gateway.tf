@@ -134,7 +134,16 @@ resource "aws_iam_role" "api_gateway_execution_role" {
       }
     ]
   })
+}
 
+resource "aws_iam_policy" "iam_policy_for_gateway" {
+  depends_on = [
+    aws_dynamodb_table.visitor_count
+  ]
+
+  name        = "aws_iam_policy_for_terraform_aws_gateway_role"
+  path        = "/"
+  description = "AWS IAM Policy for managing aws Apigateway role"
   # Allow API Gateway to invoke Lambda functions
   # Replace <lambda-arn> with the ARN of your Lambda function
   # Replace <region> with the region your Lambda function is deployed in
@@ -149,6 +158,11 @@ resource "aws_iam_role" "api_gateway_execution_role" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_gateway_role" {
+  role       = aws_iam_role.iam_policy_for_gateway.name
+  policy_arn = aws_iam_policy.iam_policy_for_gateway.arn
 }
 
 
