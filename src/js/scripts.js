@@ -3,7 +3,7 @@ async function get_visitors() {
     try {
         // The fetch() method is used to make the request, passing in the method type GET as the second argument.
         // The response is then logged to the console, and the JSON data is extracted from it using response.json() and assigned to the data variable.
-        let response = await fetch('https://api.connersmith.net', {
+        let response = await fetch('https://api.connersmith.net/Prod/visitor_count', {
             method: 'GET'
         });
         console.log(response)
