@@ -1,4 +1,7 @@
-# Create a CloudFront distribution for the website.
+# creates an AWS CloudFront distribution for the website,
+# which will use an S3 bucket as the origin for the website content
+# and an API Gateway for the backend API. The enabled parameter is set to true to enable the distribution,
+# and default_root_object is set to index.html to serve as the default page.
 resource "aws_cloudfront_distribution" "website" {
   origin {
     domain_name = aws_s3_bucket.root_bucket.bucket_regional_domain_name
@@ -28,10 +31,16 @@ resource "aws_cloudfront_distribution" "website" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
-  
 
 
-  # Use the default CloudFront cache behavior.
+
+  # The default_cache_behavior and ordered_cache_behavior blocks define the caching behavior of the CloudFront distribution for the website and API respectively.
+  # Both blocks set the allowed_methods and cached_methods parameters to allow and cache GET and HEAD requests.
+  # The target_origin_id parameter is set to the ID of the corresponding origin.
+  # forwarded_values block specifies whether to forward query strings or cookies to the origin.
+  # viewer_protocol_policy parameter is set to "redirect-to-https" to redirect HTTP requests to HTTPS.
+  # The min_ttl, default_ttl, and max_ttl parameters define the minimum, default,
+  # and maximum TTL values for cached objects respectively. The compress parameter enables or disables compression of objects.
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
@@ -56,7 +65,7 @@ resource "aws_cloudfront_distribution" "website" {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "api.${aws_s3_bucket.root_bucket.id}"
-    path_pattern = "/api/*"
+    path_pattern     = "/api/*"
 
     forwarded_values {
       query_string = false
@@ -74,9 +83,11 @@ resource "aws_cloudfront_distribution" "website" {
   }
 
 
-  # Set the CloudFront distribution to use the www version of the domain.
+  # The aliases parameter specifies the domain names to associate with the CloudFront distribution.
   aliases = ["www.${var.domain_name}", "${var.domain_name}"]
 
+  # The custom_error_response block defines a custom error response when a 404 error occurs.
+  # In this case, it will return the content of 404.html instead of the default error message.
   custom_error_response {
     error_caching_min_ttl = 0
     error_code            = 404
@@ -84,13 +95,17 @@ resource "aws_cloudfront_distribution" "website" {
     response_page_path    = "/404.html"
   }
 
-  # Use the default CloudFront SSL certificate.
+  # The viewer_certificate block defines the SSL certificate used by the CloudFront distribution.
+  # The acm_certificate_arn parameter specifies the ARN of the ACM certificate to use.
+  # ssl_support_method specifies the SSL support method to use. minimum_protocol_version parameter sets the minimum TLS protocol version to use.
   viewer_certificate {
     acm_certificate_arn      = aws_acm_certificate.default.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
   }
 
+  # The restrictions block defines any restrictions on the CloudFront distribution.
+  # In this case, there are no restrictions on geographic locations.
   restrictions {
     geo_restriction {
       restriction_type = "none"
@@ -100,6 +115,7 @@ resource "aws_cloudfront_distribution" "website" {
   tags = var.common_tags
 }
 
+# The aws_acm_certificate resource creates an ACM certificate for the domain name and its subdomains.
 resource "aws_acm_certificate" "default" {
   provider                  = aws.acm
   domain_name               = var.domain_name
@@ -110,6 +126,7 @@ resource "aws_acm_certificate" "default" {
   }
 }
 
+# The aws_acm_certificate_validation resource validates the ACM certificate by creating DNS records in Route 53.
 resource "aws_acm_certificate_validation" "default" {
   provider                = aws.acm
   certificate_arn         = aws_acm_certificate.default.arn

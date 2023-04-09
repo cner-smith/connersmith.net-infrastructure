@@ -1,4 +1,6 @@
+# This imports the necessary modules needed for the script, specifically json, boto3, and os.
 import json, boto3, os
+# This imports the ClientError class from the botocore.exceptions module.
 from botocore.exceptions import ClientError
 
 
@@ -6,9 +8,10 @@ from botocore.exceptions import ClientError
 dynamodb = boto3.resource('dynamodb')
 # Set dynamodb table name variable from env
 ddbTableName = os.environ['DYNAMOTABLE']
+# This sets a variable table to an instance of the DynamoDB table to be used.
 table = dynamodb.Table(ddbTableName)
 
-
+# This is the main function that is executed when the Lambda function is triggered.
 def lambda_handler(event, context):
     # Update item in table or add if doesn't exist
     ddbResponse = table.update_item(
@@ -23,17 +26,19 @@ def lambda_handler(event, context):
     )
 
 
-    # Format dynamodb response into variable
+    # This formats the response from DynamoDB as a JSON object containing a key
+    # connersmith.net with the value being the integer value of the hits attribute returned by DynamoDB.
     responseBody = json.dumps({"connersmith.net": int(ddbResponse["Attributes"]["hits"])})
 
 
-    # Create api response object
+    # This creates an API response object that includes a header specifying which origins are allowed to make requests,
+    # the status code of the response, and the body of the response as the responseBody variable created earlier.
     apiResponse = {
         "isBase64Encoded": False,
         "statusCode": 200,
         'headers': {
             'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://connersmith.net',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
         },
         "body": responseBody

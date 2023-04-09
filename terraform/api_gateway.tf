@@ -1,14 +1,19 @@
 # Create an API Gateway endpoint
+# creates a REST API in AWS API Gateway, which will serve as the endpoint for your application.
 resource "aws_api_gateway_rest_api" "visitor_count_api" {
   name = "visitor_count_api"
 }
 
+# creates a resource in the API Gateway REST API, which represents a part of the URL path.
+# In this case, the resource is called "visitor_count" and it is a child of the root resource.
 resource "aws_api_gateway_resource" "visitor_count_resource" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   parent_id   = aws_api_gateway_rest_api.visitor_count_api.root_resource_id
   path_part   = "visitor_count"
 }
 
+#creates a method in the API Gateway REST API, which is associated with the "visitor_count"
+# resource and responds to HTTP GET requests. The "authorization" field specifies that no authentication is required to access this method.
 resource "aws_api_gateway_method" "visitor_count_get" {
   rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id   = aws_api_gateway_resource.visitor_count_resource.id
@@ -16,33 +21,83 @@ resource "aws_api_gateway_method" "visitor_count_get" {
   authorization = "NONE"
 }
 
+# creates an OPTIONS method in the API Gateway REST API, which is used for CORS (Cross-Origin Resource Sharing) requests.
+resource "aws_api_gateway_method" "visitor_count_options_method" {
+  rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id   = aws_api_gateway_resource.visitor_count_resource.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+# creates a response for the OPTIONS method that was created in the previous block. This response returns an HTTP status code of 200.
+resource "aws_api_gateway_method_response" "visitor_count_options_method_response" {
+  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  http_method = aws_api_gateway_method.visitor_count_options_method.http_method
+  status_code = "200"
+}
+
+# creates an integration for the OPTIONS method that was created earlier.
+# This integration is a mock integration, which just returns a static response.
+# The request template specifies the format of the request that will be sent to the integration.
+resource "aws_api_gateway_integration" "visitor_count_options_method_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id             = aws_api_gateway_resource.visitor_count_resource.id
+  http_method             = aws_api_gateway_method.visitor_count_options_method.http_method
+  integration_http_method = "OPTIONS"
+  type                    = "MOCK"
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+# creates an integration response for an OPTIONS request on the API Gateway. 
+# It adds headers to allow Cross-Origin Resource Sharing (CORS) from any domain.
+resource "aws_api_gateway_integration_response" "visitor_count_options_method_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id = aws_api_gateway_resource.visitor_count_resource.id
+  http_method = aws_api_gateway_method.visitor_count_options_method.http_method
+  status_code = aws_api_gateway_method_response.visitor_count_options_method_response.status_code
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'",
+    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET'"
+  }
+}
+
+
+# creates a method response for a GET request on the API Gateway. 
+# It sets headers to allow Cross-Origin Resource Sharing (CORS) from any domain. 
 resource "aws_api_gateway_method_response" "cors_method_response_200" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_resource.visitor_count_resource.id
   http_method = aws_api_gateway_method.visitor_count_get.http_method
   status_code = "200"
-   response_parameters = {
-      "method.response.header.Access-Control-Allow-Origin" = true,
-      "method.response.header.Access-Control-Allow-Headers" = true,
-      "method.response.header.Access-Control-Allow-Methods" = true
-    }
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin"  = true,
+    "method.response.header.Access-Control-Allow-Headers" = true,
+    "method.response.header.Access-Control-Allow-Methods" = true
+  }
   response_models = {
     "application/json" = aws_api_gateway_model.visitor_count_model.name
   }
   depends_on = [aws_api_gateway_method.visitor_count_get]
 }
 
+# creates an integration for a GET request on the API Gateway. 
+# It forwards requests to a Lambda function, using the POST method with AWS_PROXY integration type.
 resource "aws_api_gateway_integration" "visitor_count_integration" {
   rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id             = aws_api_gateway_resource.visitor_count_resource.id
   http_method             = aws_api_gateway_method.visitor_count_get.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  credentials = aws_iam_role.api_gateway_execution_role.arn
+  credentials             = aws_iam_role.api_gateway_execution_role.arn
   uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
   depends_on              = [aws_api_gateway_method.visitor_count_get, aws_lambda_function.lambda_visitor_count]
 }
 
+# creates a method for a GET request on the root resource of the API Gateway. 
 resource "aws_api_gateway_method" "proxy_root" {
   rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id   = aws_api_gateway_rest_api.visitor_count_api.root_resource_id
@@ -50,6 +105,8 @@ resource "aws_api_gateway_method" "proxy_root" {
   authorization = "NONE"
 }
 
+# creates an integration for a GET request on the root resource of the API Gateway. 
+# It forwards requests to a Lambda function, using the POST method with AWS_PROXY integration type.
 resource "aws_api_gateway_integration" "lambda_root" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_method.proxy_root.resource_id
@@ -60,6 +117,8 @@ resource "aws_api_gateway_integration" "lambda_root" {
   uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
 }
 
+# This resource creates a deployment for the API Gateway, which specifies the stage name and the REST API ID.
+# The depends_on attribute lists the resources that this deployment depends on, including the API Gateway integration and the Lambda root.
 resource "aws_api_gateway_deployment" "visitor_count_deployment" {
   depends_on = [
     aws_api_gateway_integration.visitor_count_integration,
@@ -69,6 +128,8 @@ resource "aws_api_gateway_deployment" "visitor_count_deployment" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
 }
 
+# This resource creates a domain name for the API Gateway, with a specified domain name and a certificate ARN.
+# The depends_on attribute lists the resource that this domain name depends on, which is the ACM certificate validation.
 resource "aws_api_gateway_domain_name" "api" {
   domain_name     = "api.connersmith.net"
   certificate_arn = aws_acm_certificate_validation.default.certificate_arn
@@ -77,6 +138,10 @@ resource "aws_api_gateway_domain_name" "api" {
   depends_on = [aws_acm_certificate_validation.default]
 }
 
+# This resource creates a base path mapping for the API Gateway, which maps the base path to a specific stage of the API Gateway deployment.
+# The api_id attribute specifies the REST API ID, the stage_name attribute specifies the stage name of the deployment,
+# and the domain_name attribute specifies the domain name of the API Gateway.
+#  This resource ensures that requests to the root path of the domain name are directed to the specified stage of the API Gateway deployment.
 resource "aws_api_gateway_base_path_mapping" "hit" {
   api_id      = aws_api_gateway_rest_api.visitor_count_api.id
   stage_name  = aws_api_gateway_deployment.visitor_count_deployment.stage_name
@@ -84,6 +149,10 @@ resource "aws_api_gateway_base_path_mapping" "hit" {
   base_path   = "Prod"
 }
 
+# This resource creates a model for the API Gateway, which specifies the schema for the request or response.
+# The rest_api_id attribute specifies the REST API ID, the name attribute specifies the name of the model,
+# the content_type attribute specifies the content type of the schema, and the schema attribute specifies the JSON schema for the model.
+# The visitor_count_model resource specifies a schema for the visitor count data, and the empty resource specifies an empty schema for certain responses.
 resource "aws_api_gateway_model" "visitor_count_model" {
   rest_api_id  = aws_api_gateway_rest_api.visitor_count_api.id
   name         = "visitorcountmodel"
@@ -100,16 +169,29 @@ resource "aws_api_gateway_model" "visitor_count_model" {
   })
 }
 
+# resource with the name "Empty" defines an empty JSON schema with no properties.
+# This is useful when the API Gateway method does not return any response,
+# so this model can be used as a placeholder for the method response.
+resource "aws_api_gateway_model" "empty" {
+  rest_api_id  = aws_api_gateway_rest_api.visitor_count_api.id
+  name         = "Empty"
+  content_type = "application/json"
+  schema       = ""
+}
+
+# resource defines a response for the API Gateway integration.
+# In this case, it maps the hits attribute from the Lambda function response to the hits property
+# in the response body of the API Gateway method. It also sets the CORS headers to allow requests from the domain specified in the var.domain_name variable.
 resource "aws_api_gateway_integration_response" "visitor_count_integration_response" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_resource.visitor_count_resource.id
   http_method = aws_api_gateway_method.visitor_count_get.http_method
   status_code = "200"
   response_parameters = {
-      "method.response.header.Access-Control-Allow-Origin" = "'https://${var.domain_name}'",
-      "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-      "method.response.header.Access-Control-Allow-Methods" = "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
-    }
+    "method.response.header.Access-Control-Allow-Origin"  = "'https://${var.domain_name}'",
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+    "method.response.header.Access-Control-Allow-Methods" = "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
+  }
   response_templates = {
     "application/json" = jsonencode({ hits = "$context.authorizer.claims.hits" })
   }
@@ -119,6 +201,8 @@ resource "aws_api_gateway_integration_response" "visitor_count_integration_respo
   ]
 }
 
+# resource creates an IAM role that can be assumed by the API Gateway service.
+# The assume_role_policy attribute specifies that only the API Gateway service is allowed to assume this role.
 resource "aws_iam_role" "api_gateway_execution_role" {
   name = "api_gateway_execution_role"
 
@@ -136,6 +220,8 @@ resource "aws_iam_role" "api_gateway_execution_role" {
   })
 }
 
+#resource creates an IAM policy that allows the API Gateway service to invoke the Lambda function.
+# The policy attribute specifies the resource ARN of the Lambda function that is allowed to be invoked.
 resource "aws_iam_policy" "iam_policy_for_gateway" {
   depends_on = [
     aws_dynamodb_table.visitor_count
@@ -152,14 +238,15 @@ resource "aws_iam_policy" "iam_policy_for_gateway" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = "lambda:InvokeFunction"
-        Effect = "Allow"
+        Action   = "lambda:InvokeFunction"
+        Effect   = "Allow"
         Resource = "arn:aws:lambda:${var.aws_region}:760268051681:function:${aws_lambda_function.lambda_visitor_count.function_name}"
       }
     ]
   })
 }
 
+# resource attaches the IAM policy to the IAM role created earlier, which grants the API Gateway service permission to invoke the Lambda function.
 resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_gateway_role" {
   role       = aws_iam_role.api_gateway_execution_role.name
   policy_arn = aws_iam_policy.iam_policy_for_gateway.arn
