@@ -31,7 +31,8 @@ resource "aws_api_gateway_method_response" "cors_method_response_200" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Origin"  = true,
     "method.response.header.Access-Control-Allow-Headers" = true,
-    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Methods" = true,
+    "method.response.header.Access-Control-Allow-Credentials" = true
   }
   response_models = {
     "application/json" = aws_api_gateway_model.visitor_count_model.name
@@ -126,14 +127,14 @@ resource "aws_api_gateway_model" "visitor_count_model" {
 
 # resource defines a response for the API Gateway integration.
 # In this case, it maps the hits attribute from the Lambda function response to the hits property
-# in the response body of the API Gateway method. It also sets the CORS headers to allow requests from the domain specified in the var.domain_name variable.
+# in the response body of the API Gateway method. It also sets the CORS headers to allow requests from the domain specified in the ${var.domain_name} variable.
 resource "aws_api_gateway_integration_response" "visitor_count_integration_response" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_resource.visitor_count_resource.id
   http_method = aws_api_gateway_method.visitor_count_get.http_method
   status_code = "200"
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = "'https://api.${var.domain_name}'",
+    "method.response.header.Access-Control-Allow-Origin"  = "'https://${var.domain_name}'",
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
     "method.response.header.Access-Control-Allow-Methods" = "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
   }
