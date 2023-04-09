@@ -69,7 +69,7 @@ resource "aws_api_gateway_method" "proxy_root" {
 # It forwards requests to a Lambda function, using the POST method with AWS_PROXY integration type.
 resource "aws_api_gateway_integration" "lambda_root" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id = aws_api_gateway_resource.visitor_count_resource.resource_id
+  resource_id = aws_api_gateway_resource.visitor_count_resource.id
   http_method = aws_api_gateway_method.proxy_root.http_method
 
   credentials = aws_iam_role.api_gateway_execution_role.arn
