@@ -82,5 +82,5 @@ resource "aws_lambda_permission" "visitor_count_lambda_permission" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.lambda_visitor_count.arn
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:us-east-1:760268051681:${aws_api_gateway_rest_api.visitor_count_api.id}/*/${aws_api_gateway_method.visitor_count_get.http_method}/*"
+  source_arn    = "${aws_api_gateway_rest_api.visitor_count_api.execution_arn}/*"
 }
