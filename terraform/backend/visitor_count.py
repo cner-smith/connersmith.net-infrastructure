@@ -28,7 +28,7 @@ def lambda_handler(event, context):
 
     # This formats the response from DynamoDB as a JSON object containing a key
     # connersmith.net with the value being the integer value of the hits attribute returned by DynamoDB.
-    responseBody = json.dumps({"connersmith.net": int(ddbResponse["Attributes"]["hits"])})
+    responseBody = json.dumps(int(ddbResponse["Attributes"]["hits"]))
 
 
     # This creates an API response object that includes a header specifying which origins are allowed to make requests,
