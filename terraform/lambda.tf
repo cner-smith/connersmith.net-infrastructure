@@ -90,7 +90,7 @@ resource "aws_lambda_function" "lambda_visitor_count" {
 resource "aws_lambda_permission" "visitor_count_lambda_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda_visitor_count.arn
+  function_name = "lambda_visitor_count"
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.visitor_count_api.execution_arn}/*"
 }
