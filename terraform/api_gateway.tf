@@ -161,7 +161,7 @@ resource "aws_iam_policy" "iam_policy_for_gateway" {
 }
 
 resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_gateway_role" {
-  role       = aws_iam_role.iam_policy_for_gateway.name
+  role       = aws_iam_role.api_gateway_execution_role.name
   policy_arn = aws_iam_policy.iam_policy_for_gateway.arn
 }
 
