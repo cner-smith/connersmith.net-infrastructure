@@ -13,8 +13,8 @@ async function get_visitors() {
         // the value of hits is used to update the content of an HTML element with an ID of visitors.
         // Otherwise, an error message is logged to the console.
         console.log(data)
-        if (data.hasOwnProperty('hits')) {
-            document.getElementById("visitors").innerHTML = data['hits'] + " visits.";
+        if (data.hasOwnProperty('connersmith.net')) {
+            document.getElementById("visitors").innerHTML = data['connersmith.net'] + " visits.";
         } else {
             console.error('Response from API is missing "hits" attribute.');
         }
