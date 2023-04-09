@@ -172,9 +172,9 @@ resource "aws_api_gateway_model" "visitor_count_model" {
 # resource with the name "Empty" defines an empty JSON schema with no properties.
 # This is useful when the API Gateway method does not return any response,
 # so this model can be used as a placeholder for the method response.
-resource "aws_api_gateway_model" "empty" {
+resource "aws_api_gateway_model" "empty_new" {
   rest_api_id  = aws_api_gateway_rest_api.visitor_count_api.id
-  name         = "Empty"
+  name         = "Emptynew"
   content_type = "application/json"
   schema       = ""
 }
