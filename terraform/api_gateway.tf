@@ -34,7 +34,7 @@ resource "aws_api_gateway_method_response" "cors_method_response_200" {
     "method.response.header.Access-Control-Allow-Origin"      = true,
     "method.response.header.Access-Control-Allow-Headers"     = true,
     "method.response.header.Access-Control-Allow-Methods"     = true,
-    "method.response.header.Access-Control-Allow-Credentials" = true
+    "method.response.header.Access-Control-Allow-Credentials" = false
   }
   response_models = {
     "application/json" = aws_api_gateway_model.visitor_count_model.name
