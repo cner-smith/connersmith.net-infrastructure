@@ -38,7 +38,7 @@ def lambda_handler(event, context):
         "statusCode": 200,
         'headers': {
             'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': 'https://connersmith.net',
+            'Access-Control-Allow-Origin': 'https://api.connersmith.net',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
         },
         "body": responseBody
