@@ -59,16 +59,6 @@ resource "aws_api_gateway_method" "proxy_root" {
   resource_id   = aws_api_gateway_rest_api.visitor_count_api.root_resource_id
   http_method   = "GET"
   authorization = "NONE"
-  status_code = "200"
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = true,
-    "method.response.header.Access-Control-Allow-Headers" = true,
-    "method.response.header.Access-Control-Allow-Methods" = true,
-    "method.response.header.Access-Control-Allow-Credentials" = true
-  }
-  response_models = {
-    "application/json" = aws_api_gateway_model.visitor_count_model.name
-  }
 }
 
 # creates an integration for a GET request on the root resource of the API Gateway. 
