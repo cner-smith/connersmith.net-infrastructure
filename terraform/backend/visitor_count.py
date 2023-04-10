@@ -26,8 +26,7 @@ def lambda_handler(event, context):
     )
 
 
-    # This formats the response from DynamoDB as a JSON object containing a key
-    # connersmith.net with the value being the integer value of the hits attribute returned by DynamoDB.
+    # This returns the response from DynamoDB as an integer to be passed as the body
     responseBody = int(ddbResponse["Attributes"]["hits"])
 
 

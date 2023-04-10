@@ -14,7 +14,7 @@ async function get_visitors() {
         // Otherwise, an error message is logged to the console.
         console.log(data)
         if (data) {
-            document.getElementById("visitors").innerHTML = data + " visits.";
+            document.getElementById("visitors").innerHTML = data.toString() + " visits.";
         } else {
             console.error('Response from API is missing "value" attribute.');
         }
