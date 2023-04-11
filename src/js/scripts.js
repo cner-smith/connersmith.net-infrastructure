@@ -9,7 +9,7 @@ async function get_visitors() {
         console.log(response)
         let data = await response.json();
         console.log(data)
-        responseObj = JSON.parse(data);
+        responseObj = JSON.parse(data[0]);
         console.log(responseObj)
 
         // If the data object has a property named hits,
