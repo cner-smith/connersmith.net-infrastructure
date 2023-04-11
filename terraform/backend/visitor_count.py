@@ -27,7 +27,7 @@ def lambda_handler(event, context):
 
 
     # This returns the response from DynamoDB as an integer to be passed as the body
-    responseBody = int(ddbResponse["Attributes"]["hits"])
+    responseBody = json.dumps(int(ddbResponse["Attributes"]["hits"]))
 
 
     # This creates an API response object that includes a header specifying which origins are allowed to make requests,
