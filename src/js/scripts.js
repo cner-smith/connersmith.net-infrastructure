@@ -7,7 +7,7 @@ async function get_visitors() {
             method: 'GET'
         });
         console.log(response)
-        let data = await JSON.parse(response)
+        let data = await response.json
 
         // If the data object has a property named hits,
         // the value of hits is used to update the content of an HTML element with an ID of visitors.
