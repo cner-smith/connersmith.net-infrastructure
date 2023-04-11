@@ -8,12 +8,14 @@ async function get_visitors() {
         });
         console.log(response)
         let data = await response.json();
+        console.log(data)
         responseObj = JSON.parse(data);
+        console.log(responseObj)
 
         // If the data object has a property named hits,
         // the value of hits is used to update the content of an HTML element with an ID of visitors.
         // Otherwise, an error message is logged to the console.
-        console.log(data)
+        
         if (data) {
             document.getElementById("visitors").innerHTML = responseObj["connersmith.net"] + " visits.";
         } else {
