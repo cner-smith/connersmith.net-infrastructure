@@ -61,7 +61,8 @@ resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_iam_role" {
 # The data "archive_file" block creates a zip archive of the Python code located in the backend folder of the module.
 data "archive_file" "zip_the_python_code" {
   type        = "zip"
-  source_dir  = "${path.module}/backend/"
+  source_dir  = "${path.module}/backend/visitor_count.py"
+  output_file_mode = "0666"
   output_path = "${path.module}/backend/visitor_count.zip"
 }
 
