@@ -7,9 +7,9 @@ async function get_visitors() {
             method: 'GET'
         });
         console.log(response);
-        let apiResponse = await response.json;
-        let data = JSON.parse(apiResponse.body);
+        let data = await response.json;
         var name = "connersmith.net"
+        var count = data[name];
         console.log(data)
         console.log(name)
 
@@ -18,12 +18,12 @@ async function get_visitors() {
         // Otherwise, an error message is logged to the console.
         
         if (data) {
-            document.getElementById("visitors").innerHTML = data[name] + " visits.";
+            document.getElementById("visitors").innerHTML = count + " visits.";
         } else {
             console.error('Response from API is missing "value" attribute.');
         }
         console.log(data);
-        return data;
+        return count;
     } catch (err) {
         console.error(err);
     }
