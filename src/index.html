@@ -96,7 +96,20 @@
 											</div>
 										</article>
 										<article>
-											<a class="image"><img src="images/diagram.png" alt="" /></a>
+											<!-- Trigger the Modal -->
+											<img id="myImg" src="images/diagram.png" alt="Website Diagram" class="image">
+											<!-- The Modal -->
+											<div id="myModal" class="modal">
+
+												<!-- The Close Button -->
+												<span class="close">&times;</span>
+											
+												<!-- Modal Content (The Image) -->
+												<img class="modal-content" id="img01">
+											
+												<!-- Modal Caption (Image Text) -->
+												<div id="caption"></div>
+											</div>
 											<div class="inner">
 												<h4>Website Architecture Diagram</h4>
 												<p>This picture, which you can find in my github for draw.io, gives a high level overview of the structure of my website.</p>
@@ -490,6 +503,7 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			<script src="assets/js/modal.js"></script>
 
 	</body>
 </html>
