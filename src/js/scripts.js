@@ -6,15 +6,17 @@ async function get_visitors() {
         let response = await fetch('https://api.connersmith.net/Prod/visitor_count', {
             method: 'GET'
         });
-        console.log(response)
-        let data = await response.json
+        console.log(response);
+        let data = await response.json;
+        var parsedata = JSON.parse(data);
+        var name = "connersmith.net"
 
         // If the data object has a property named hits,
         // the value of hits is used to update the content of an HTML element with an ID of visitors.
         // Otherwise, an error message is logged to the console.
         
         if (data) {
-            document.getElementById("visitors").innerHTML = data.body["connersmith.net"] + " visits.";
+            document.getElementById("visitors").innerHTML = print(parsedata.var(name)) + " visits.";
         } else {
             console.error('Response from API is missing "value" attribute.');
         }
