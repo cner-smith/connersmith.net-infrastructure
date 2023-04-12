@@ -7,7 +7,7 @@ async function get_visitors() {
             method: 'GET'
         });
         console.log(response);
-        let data = await response.json;
+        let data = await response.json();
         var name = "connersmith.net"
         var count = data[name];
         console.log(data)
