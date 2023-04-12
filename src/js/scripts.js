@@ -7,7 +7,8 @@ async function get_visitors() {
             method: 'GET'
         });
         console.log(response);
-        let data = await response.json;
+        let apiResponse = await response.json;
+        let data = JSON.parse(apiResponse.body);
         var name = "connersmith.net"
         console.log(data)
         console.log(name)
