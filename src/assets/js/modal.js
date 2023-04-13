@@ -11,6 +11,14 @@ img.onclick = function(){
   captionText.innerHTML = this.alt;
 }
 
+// Add event listener to modal
+modal.addEventListener("click", function(event) {
+  // Check if the clicked element is the modal itself
+  if (event.target === modal) {
+    modal.style.display = "none"; // Close the modal
+  }
+});
+
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
