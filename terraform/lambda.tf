@@ -22,7 +22,7 @@ EOF
 }
 
 # The aws_iam_policy resource creates an IAM policy that allows
-# the Lambda function to interact with the aws_dynamodb_table resource named visitor_count.
+# the Lambda function to read, write, or update with the aws_dynamodb_table resource named visitor_count.
 # This policy is attached to the aws_iam_role created earlier.
 resource "aws_iam_policy" "iam_policy_for_lambda" {
   depends_on = [
@@ -87,7 +87,7 @@ resource "aws_lambda_function" "lambda_visitor_count" {
 }
 
 # the aws_lambda_permission resource sets up permissions for API Gateway to invoke the Lambda function.
-# It allows apigateway.amazonaws.com to invoke the aws_lambda_function resource and is triggered by a certain source_arn.
+# It allows apigateway.amazonaws.com to invoke the aws_lambda_function resource and is triggered by the api gateway's execution arn.
 resource "aws_lambda_permission" "visitor_count_lambda_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"

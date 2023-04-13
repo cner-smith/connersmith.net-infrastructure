@@ -1,6 +1,6 @@
-# creates an A record that maps the domain name to the CloudFront distribution.
-# It uses an alias block, which is a Route 53-specific feature that allows you
-# to create a DNS record that points to a CloudFront distribution or an ELB load balancer.
+# Creates an A record that maps the domain name to the CloudFront distribution.
+# It uses an alias block, a Route 53-specific feature that allows you to create
+# a DNS record that points to a CloudFront distribution or an ELB load balancer.
 resource "aws_route53_record" "website" {
   zone_id = var.aws_route53_zone_id
   name    = var.domain_name
