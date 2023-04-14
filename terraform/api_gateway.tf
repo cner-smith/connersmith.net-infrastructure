@@ -211,7 +211,7 @@ resource "aws_api_gateway_integration_response" "visitor_count_integration_respo
   }
   depends_on = [
     aws_api_gateway_method.visitor_count_get,
-    aws_api_gateway_integration.visitor_count_get_integration,
+    aws_api_gateway_integration.visitor_count_integration,
   ]
 }
 
