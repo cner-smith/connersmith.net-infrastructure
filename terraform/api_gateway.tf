@@ -59,7 +59,7 @@ resource "aws_api_gateway_integration" "visitor_count_integration" {
 resource "aws_api_gateway_method" "proxy_root" {
   rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id   = aws_api_gateway_rest_api.visitor_count_api.root_resource_id
-  http_method   = "POST"
+  http_method   = "GET"
   authorization = "NONE"
 
   depends_on = [aws_api_gateway_resource.visitor_count_resource]
