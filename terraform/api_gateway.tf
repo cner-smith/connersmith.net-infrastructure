@@ -88,7 +88,7 @@ resource "aws_api_gateway_method_response" "cors_method_response_post" {
 resource "aws_api_gateway_method" "proxy_root" {
   rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id   = aws_api_gateway_rest_api.visitor_count_api.root_resource_id
-  http_method   = "GET"
+  http_method   = "POST"
   authorization = "NONE"
 
   depends_on = [aws_api_gateway_resource.visitor_count_resource]
@@ -168,7 +168,7 @@ resource "aws_api_gateway_integration_response" "options" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_resource.visitor_count_resource.id
   http_method = aws_api_gateway_method.options.http_method
-  status_code = aws_api_gateway_method_response.cors_method_response_200.status_code
+  status_code = aws_api_gateway_method_response.cors_method_response_post.status_code
 
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
@@ -241,7 +241,7 @@ resource "aws_api_gateway_model" "visitor_count_model" {
 resource "aws_api_gateway_integration_response" "visitor_count_integration_response" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_resource.visitor_count_resource.id
-  http_method = aws_api_gateway_method.visitor_count_get.http_method
+  http_method = aws_api_gateway_method.visitor_count_post.http_method
   status_code = aws_api_gateway_method_response.cors_method_response_post.status_code
   response_parameters = {
     "method.response.header.Access-Control-Allow-Origin"  = "'https://${var.domain_name}'",
@@ -252,8 +252,8 @@ resource "aws_api_gateway_integration_response" "visitor_count_integration_respo
     "application/json" = jsonencode({ hits = "$context.authorizer.claims.hits" })
   }
   depends_on = [
-    aws_api_gateway_method.visitor_count_get,
-    aws_api_gateway_integration.visitor_count_integration,
+    aws_api_gateway_method.visitor_count_post,
+    aws_api_gateway_integration.visitor_count_post_integration,
   ]
 }
 
