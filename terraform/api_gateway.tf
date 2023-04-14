@@ -111,14 +111,14 @@ resource "aws_api_gateway_integration" "lambda_root" {
 # creates an integration for a POST request on the API Gateway.
 # It forwards requests to a Lambda function, using the POST method with AWS_PROXY integration type.
 resource "aws_api_gateway_integration" "visitor_count_post_integration" {
-  rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
-  resource_id = aws_api_gateway_resource.visitor_count_resource.id
-  http_method = aws_api_gateway_method.visitor_count_post.http_method
+  rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
+  resource_id             = aws_api_gateway_resource.visitor_count_resource.id
+  http_method             = aws_api_gateway_method.visitor_count_post.http_method
   integration_http_method = "POST"
-  type = "AWS_PROXY"
-  credentials = aws_iam_role.api_gateway_execution_role.arn
-  uri = aws_lambda_function.lambda_visitor_count.invoke_arn
-  depends_on = [aws_api_gateway_method.visitor_count_post, aws_lambda_function.lambda_visitor_count]
+  type                    = "AWS_PROXY"
+  credentials             = aws_iam_role.api_gateway_execution_role.arn
+  uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
+  depends_on              = [aws_api_gateway_method.visitor_count_post, aws_lambda_function.lambda_visitor_count]
 }
 
 # creates an API Gateway method resource to handle HTTP OPTIONS requests.
@@ -242,7 +242,7 @@ resource "aws_api_gateway_integration_response" "visitor_count_integration_respo
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_resource.visitor_count_resource.id
   http_method = aws_api_gateway_method.visitor_count_get.http_method
-  status_code = aws_api_gateway_method_response.cors_method_response_200.status_code
+  status_code = aws_api_gateway_method_response.cors_method_response_post.status_code
   response_parameters = {
     "method.response.header.Access-Control-Allow-Origin"  = "'https://${var.domain_name}'",
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
