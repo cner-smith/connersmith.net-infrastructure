@@ -67,11 +67,11 @@ resource "aws_api_gateway_integration" "visitor_count_integration" {
 
 # creates a method response for a POST request on the API Gateway. 
 # It sets headers to allow Cross-Origin Resource Sharing (CORS) from all domains by using the wildcard "*", as shown in the configuration. 
-resource "aws_api_gateway_method_response" "cors_method_response_201" {
+resource "aws_api_gateway_method_response" "cors_method_response_post" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_resource.visitor_count_resource.id
   http_method = aws_api_gateway_method.visitor_count_post.http_method
-  status_code = "201"
+  status_code = "200"
   response_parameters = {
     "method.response.header.Access-Control-Allow-Origin"      = true,
     "method.response.header.Access-Control-Allow-Headers"     = true,
