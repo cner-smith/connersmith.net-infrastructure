@@ -13,38 +13,21 @@ table = dynamodb.Table(ddbTableName)
 
 # This is the main function that is executed when the Lambda function is triggered.
 def lambda_handler(event, context):
-    # Get the boolean value from the event object passed by the JavaScript code
-    increase_hits = event['increase_hits']
-
-    if increase_hits:
-        # Update item in table or add if doesn't exist
-        ddbResponse = table.update_item(
-            Key={
-                'site_id': 'connersmith.net'
-            },
-            UpdateExpression='SET hits = hits + :value',
-            ExpressionAttributeValues={
-                ':value':1
-            },
-            ReturnValues="UPDATED_NEW"
-        )
-        
-        responseBody = json.dumps({"connersmith.net" : int(ddbResponse["Attributes"]["hits"])})
-        statusCode = 200  # Set the status code to 200 for success
-    else:
-        # Get item from table
-        ddbResponse = table.get_item(
-            Key={
-                'site_id': 'connersmith.net'
-            }
-        )
-
-        responseBody = json.dumps({"connersmith.net" : int(ddbResponse["Attributes"]["hits"])})
-        statusCode = 200  # Set the status code to 200 for success
+    # Update item in table or add if doesn't exist
+    ddbResponse = table.update_item(
+        Key={
+            'site_id': 'connersmith.net'
+        },
+        UpdateExpression='SET hits = hits + :value',
+        ExpressionAttributeValues={
+            ':value':1
+        },
+        ReturnValues="UPDATED_NEW"
+    )
 
 
     # This returns the response from DynamoDB as an integer to be passed as the body
-    # responseBody = json.dumps({"connersmith.net" : int(ddbResponse["Attributes"]["hits"])})
+    responseBody = json.dumps(int(ddbResponse["Attributes"]["hits"]))
 
 
     # This creates an API response object that includes a header specifying which origins are allowed to make requests,
