@@ -24,8 +24,10 @@ async function updateVisitors(increaseHits) {
     try {
         // Make the API request to update the visitor count and pass the increase_hits boolean value
         let response = await fetch('https://api.connersmith.net/Prod/visitor_count', {
-            method: 'POST',
-            body: JSON.stringify({ increase_hits: increaseHits })
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
         let data = await response.json();
         var name = "connersmith.net"
