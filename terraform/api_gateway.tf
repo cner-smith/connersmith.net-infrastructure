@@ -189,6 +189,9 @@ resource "aws_api_gateway_model" "visitor_count_model" {
       "hits" : {
         "type" : "integer"
       }
+      "is_active" : {
+        "type" : "boolean"
+      }
     }
   })
 }
