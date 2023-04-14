@@ -24,7 +24,7 @@ resource "aws_api_gateway_method" "visitor_count_get" {
 }
 
 # creates a method response for a GET request on the API Gateway. 
-# It sets headers to allow Cross-Origin Resource Sharing (CORS) from all domains by using the wildcard "*", as shown in the configuration. 
+# It sets headers to allow Cross-Origin Resource Sharing (CORS) from any domain. 
 resource "aws_api_gateway_method_response" "cors_method_response_200" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_resource.visitor_count_resource.id
@@ -43,12 +43,12 @@ resource "aws_api_gateway_method_response" "cors_method_response_200" {
 }
 
 # creates an integration for a GET request on the API Gateway. 
-# It forwards requests to a Lambda function, using the GET method with AWS_PROXY integration type.
+# It forwards requests to a Lambda function, using the POST method with AWS_PROXY integration type.
 resource "aws_api_gateway_integration" "visitor_count_integration" {
   rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id             = aws_api_gateway_resource.visitor_count_resource.id
   http_method             = aws_api_gateway_method.visitor_count_get.http_method
-  integration_http_method = "GET"
+  integration_http_method = "POST"
   type                    = "AWS_PROXY"
   credentials             = aws_iam_role.api_gateway_execution_role.arn
   uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
@@ -66,7 +66,7 @@ resource "aws_api_gateway_method" "proxy_root" {
 }
 
 # creates an integration for a GET request on the root resource of the API Gateway. 
-# It forwards requests to a Lambda function, using the GET method with AWS_PROXY integration type.
+# It forwards requests to a Lambda function, using the POST method with AWS_PROXY integration type.
 resource "aws_api_gateway_integration" "lambda_root" {
   rest_api_id = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id = aws_api_gateway_resource.visitor_count_resource.id
@@ -74,13 +74,13 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
   credentials = aws_iam_role.api_gateway_execution_role.arn
 
-  integration_http_method = "GET"
+  integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
 }
 
 # creates an API Gateway method resource to handle HTTP OPTIONS requests.
-# It specifies that the method should have authorization = "NONE", and should be associated with a specific REST API and resource.
+# It specifies that the method should have no authorization, and should be associated with a specific REST API and resource.
 resource "aws_api_gateway_method" "options" {
   rest_api_id   = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id   = aws_api_gateway_resource.visitor_count_resource.id
@@ -188,9 +188,6 @@ resource "aws_api_gateway_model" "visitor_count_model" {
     "properties" : {
       "hits" : {
         "type" : "integer"
-      }
-      "is_active" : {
-        "type" : "boolean"
       }
     }
   })
