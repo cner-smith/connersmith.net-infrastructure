@@ -48,7 +48,7 @@ resource "aws_api_gateway_integration" "visitor_count_integration" {
   rest_api_id             = aws_api_gateway_rest_api.visitor_count_api.id
   resource_id             = aws_api_gateway_resource.visitor_count_resource.id
   http_method             = aws_api_gateway_method.visitor_count_get.http_method
-  integration_http_method = "POST"
+  integration_http_method = "GET"
   type                    = "AWS_PROXY"
   credentials             = aws_iam_role.api_gateway_execution_role.arn
   uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
@@ -74,7 +74,7 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
   credentials = aws_iam_role.api_gateway_execution_role.arn
 
-  integration_http_method = "POST"
+  integration_http_method = "GET"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.lambda_visitor_count.invoke_arn
 }
