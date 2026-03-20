@@ -45,7 +45,7 @@ jobs:
       run: terraform init -upgrade
 
     - name: Generate Terraform Plan
-      run: terraform plan -out=tfplan
+      run: terraform plan -out=tfplan -var="lambda_source_code_hash=${{ env.LAMBDA_HASH }}"
 
     - name: Apply Terraform Changes
       run: terraform apply tfplan
