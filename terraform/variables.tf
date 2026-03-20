@@ -32,6 +32,12 @@ variable "aws_route53_zone_id" {
   default = "Z09221043M6GRJ1HICC5B"
 }
 
+variable "lambda_source_code_hash" {
+  description = "Base64-encoded SHA256 hash of the Lambda zip, used to force redeployment on code changes."
+  type        = string
+  default     = ""
+}
+
 # Common tags to apply to both S3 buckets.
 variable "common_tags" {
   default = {
