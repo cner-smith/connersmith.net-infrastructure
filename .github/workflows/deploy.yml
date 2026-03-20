@@ -21,11 +21,20 @@ jobs:
         aws-region: us-east-1
 
     - name: Zip Lambda function
-      working-directory: ${{ github.workspace }}
+      working-directory: ${{ github.workspace }}/terraform/backend
       run: |
-        cd terraform/backend
         zip -j visitor_count.zip visitor_count.mjs
         aws s3 cp visitor_count.zip s3://connersmith.net.repo/visitor_count
+        HASH=$(openssl dgst -sha256 -binary visitor_count.zip | openssl enc -base64)
+        echo "LAMBDA_HASH=$HASH" >> $GITHUB_ENV
+        echo "Hash computed: $HASH"
+
+    - name: Hash Lambda zip
+      working-directory: ${{ github.workspace }}/terraform/backend
+      run: |
+        HASH=$(openssl dgst -sha256 -binary visitor_count.zip | openssl enc -base64)
+        echo "LAMBDA_HASH=$HASH" >> $GITHUB_ENV
+        echo "Hash computed: $HASH"
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
