@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Conner Smith | Software Developer</title>
+<meta name="description" content="Software Developer based in Oklahoma City. I build and break things — from automated test suites to cloud infrastructure and the occasional video game.">
+<meta property="og:title" content="Conner Smith | Software Developer">
+<meta property="og:description" content="Software Developer based in Oklahoma City. Cloud, DevOps, Salesforce, and more.">
+<meta property="og:image" content="https://connersmith.net/images/avatar.jpeg">
+<meta property="og:url" content="https://connersmith.net">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Conner Smith | Software Developer">
+<meta name="twitter:description" content="Software Developer based in Oklahoma City. Cloud, DevOps, Salesforce, and more.">
+<meta name="twitter:image" content="https://connersmith.net/images/avatar.jpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -13,6 +23,11 @@
   --accent:#58a6ff;--accent2:#a78bfa;
   --text:#e6edf3;--muted:#8b949e;--border:#30363d;
   --font:'Space Grotesk',sans-serif;
+}
+body.light{
+  --bg:#ffffff;--surface:#f6f8fa;--surface2:#eaeef2;
+  --text:#1f2328;--muted:#636c76;--border:#d0d7de;
+  --accent:#0969da;--accent2:#8250df;
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.6}
@@ -127,8 +142,9 @@ h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-
 
 /* FOOTER */
 footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:13px;max-width:1000px;margin:0 auto}
-.visitor-count{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;margin-top:.5rem}
-.vc-dot{width:6px;height:6px;border-radius:50%;background:#3eaf7c}
+.theme-toggle{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:14px;transition:border-color .2s,color .2s;font-family:var(--font)}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.footer-meta{color:var(--muted);font-size:13px;margin-top:.5rem}
 
 /* SCROLL ANIMATIONS */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
@@ -150,14 +166,16 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
 <nav>
   <div class="nav-inner">
     <a class="nav-logo" href="#">cs<span>.</span></a>
-    <ul class="nav-links">
+          <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#certs">Certifications</a></li>
+      <li><a href="#resume">Resume</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <a class="nav-cta" href="#contact">Hire me</a>
+    <button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">☀️</button>
   </div>
 </nav>
 
@@ -411,6 +429,27 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
   </div>
 </section>
 
+<!-- RESUME -->
+<section id="resume">
+  <div class="reveal">
+    <p class="section-label">Resume</p>
+    <h2 class="section-title">My resume</h2>
+    <div class="section-divider"></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;">
+      <div>
+        <p style="font-size:17px;font-weight:600;color:var(--text);margin-bottom:6px;">Conner Smith — Software Developer</p>
+        <p style="font-size:14px;color:var(--muted);">Cloud · DevOps · AWS · Salesforce · Agile</p>
+        <p style="font-size:13px;color:var(--muted);margin-top:8px;">Last updated 2025 · Hosted on Google Drive</p>
+      </div>
+      <a href="https://t.ly/OQEq" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#0d1117;padding:12px 24px;border-radius:8px;font-weight:600;font-size:15px;text-decoration:none;white-space:nowrap;transition:opacity .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg>
+        View Resume
+      </a>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-top:1rem;">Prefer a quick summary? The highlights are all on this page — skills, projects, and certifications above.</p>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section id="contact">
   <div class="reveal contact-inner">
@@ -458,10 +497,29 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
 
 <footer>
   <p>Designed & built by Conner Smith · Hosted on AWS</p>
-  <div class="visitor-count" id="vc"><span class="vc-dot"></span><span id="vc-text">Loading visitor count...</span></div>
+  <p class="footer-meta">Last updated <span id="last-updated">--</span></p>
+  <div style="display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;margin-top:.5rem">
+    <span style="width:6px;height:6px;border-radius:50%;background:#3eaf7c;display:inline-block"></span>
+    <span id="vc-text">Loading visitor count...</span>
+  </div>
 </footer>
 
 <script>
+// Theme toggle
+const btn = document.getElementById('theme-btn');
+const saved = localStorage.getItem('theme');
+if(saved === 'light') { document.body.classList.add('light'); btn.textContent = '🌙'; }
+btn.addEventListener('click', () => {
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  btn.textContent = isLight ? '🌙' : '☀️';
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+});
+
+// Last updated — injected by CI/CD, fallback to today
+const buildDate = document.getElementById('last-updated');
+buildDate.textContent = document.querySelector('meta[name="build-date"]')?.content || new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'});
+
 // Scroll reveal
 const obs = new IntersectionObserver(els => els.forEach(e => {
   if(e.isIntersecting) e.target.classList.add('visible');

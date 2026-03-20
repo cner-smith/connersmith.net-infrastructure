@@ -20,6 +20,13 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
+    - name: Inject build date
+      working-directory: ${{ github.workspace }}
+      run: |
+        BUILD_DATE=$(date +'%B %Y')
+        sed -i "s|<meta name=\"build-date\" content=\"[^\"]*\">||g" src/index.html
+        sed -i "s|</head>|<meta name=\"build-date\" content=\"$BUILD_DATE\">\n</head>|" src/index.html
+
     - name: Zip Lambda function
       working-directory: ${{ github.workspace }}/terraform/backend
       run: |
