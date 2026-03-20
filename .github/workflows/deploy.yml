@@ -33,7 +33,7 @@ jobs:
         terraform_wrapper: false
 
     - name: Initialize Terraform
-      run: terraform init
+      run: terraform init -upgrade
 
     - name: Generate Terraform Plan
       run: terraform plan -out=tfplan
