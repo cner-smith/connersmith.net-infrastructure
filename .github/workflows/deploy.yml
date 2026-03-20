@@ -22,7 +22,7 @@ jobs:
 
     - name: Zip Lambda function
       run: |
-        cd terraform/backend
+        cd /backend
         zip -j visitor_count.zip visitor_count.mjs
         aws s3 cp visitor_count.zip s3://connersmith.net.repo/visitor_count
 
