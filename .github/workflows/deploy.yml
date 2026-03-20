@@ -21,8 +21,9 @@ jobs:
         aws-region: us-east-1
 
     - name: Zip Lambda function
+      working-directory: ${{ github.workspace }}
       run: |
-        cd /backend
+        cd terraform/backend
         zip -j visitor_count.zip visitor_count.mjs
         aws s3 cp visitor_count.zip s3://connersmith.net.repo/visitor_count
 
