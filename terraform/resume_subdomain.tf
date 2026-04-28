@@ -24,7 +24,7 @@ variable "resume_redirect_url" {
 # the URL later without users seeing a stale cached redirect.
 resource "aws_cloudfront_function" "resume_redirect" {
   name    = "resume-redirect"
-  runtime = "cloudfront-js-2.0"
+  runtime = "cloudfront-js-1.0"
   comment = "302 redirect resume.connersmith.net -> Google Doc"
   publish = true
   code    = <<-EOT
