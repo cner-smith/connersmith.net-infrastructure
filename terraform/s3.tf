@@ -104,7 +104,6 @@ resource "aws_s3_bucket_acl" "artifact_repo_acl" {
 resource "aws_s3_object" "lambda_file" {
   bucket = aws_s3_bucket.artifact_repo.id
   key    = "visitor_count"
-  acl    = "public-read"
   source = "${path.module}/backend/visitor_count.zip"
 }
 

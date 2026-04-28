@@ -27,18 +27,11 @@ jobs:
         sed -i "s|<meta name=\"build-date\" content=\"[^\"]*\">||g" src/index.html
         sed -i "s|</head>|<meta name=\"build-date\" content=\"$BUILD_DATE\">\n</head>|" src/index.html
 
-    - name: Zip Lambda function
+    - name: Zip and hash Lambda function
       working-directory: ${{ github.workspace }}/terraform/backend
       run: |
         zip -j visitor_count.zip visitor_count.mjs
         aws s3 cp visitor_count.zip s3://connersmith.net.repo/visitor_count
-        HASH=$(openssl dgst -sha256 -binary visitor_count.zip | openssl enc -base64)
-        echo "LAMBDA_HASH=$HASH" >> $GITHUB_ENV
-        echo "Hash computed: $HASH"
-
-    - name: Hash Lambda zip
-      working-directory: ${{ github.workspace }}/terraform/backend
-      run: |
         HASH=$(openssl dgst -sha256 -binary visitor_count.zip | openssl enc -base64)
         echo "LAMBDA_HASH=$HASH" >> $GITHUB_ENV
         echo "Hash computed: $HASH"
@@ -78,5 +71,5 @@ jobs:
     - name: Invalidate CloudFront cache
       run: |
         aws cloudfront create-invalidation \
-          --distribution-id E1DU4QNALFZYCN \
+          --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
           --paths "/*"
